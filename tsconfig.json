@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "types": [],
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "worker-configuration.d.ts",
+    "public/engine.js",
+    "public/scenario.js"
+  ]
+}
