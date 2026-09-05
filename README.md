@@ -2,7 +2,7 @@
 
 [Play the live prototype](https://uk-budget-battle.openuk-co.workers.dev) · [Independent model handoff](HANDOFF.md) · [Economic model assessment](MODEL-INTEGRATION.md)
 
-A public-facing UK fiscal strategy **prototype** on Cloudflare Workers. Five Budgets with spending envelopes and funding controls, a ten-year ledger, three repeatable scenarios, save/resume, result links and JSON downloads.
+A public-facing UK fiscal strategy **prototype** on Cloudflare Workers. Five Budgets with spending envelopes and funding controls, a ten-year ledger, three repeatable scenarios, save/resume, result links, newspaper images and JSON downloads.
 
 ## How a Budget works
 
@@ -54,9 +54,17 @@ The goal is £40bn underlying deficit improvement (before interest) in year 5, �
 
 Before describing the game as an evidence-calibrated policy model, replace training values with sourced estimates, validate distributional and service mappings, and commission independent review. Increment `SCENARIO.version` for outcome changes; old shared games must not silently change meaning. See the model-integration assessment supplied alongside the project for the recommended path.
 
+## Visual assets and Budget Bulletin
+
+An original Blender red box opens after each confirmed Budget. A short newspaper-style bulletin describes the actual new spending/tax choices and stated capacity lags, then the player continues. It adds no new score or fictional public reaction. Five matching miniature illustrations identify the spending envelopes. At the end, players can download a 1200×1720 newspaper front page with all five Budgets, the borrowing path, safeguards and model disclosures.
+
+Original Blender source, rendering scripts and the silent 12-second launch trailer are documented in [assets/README.md](assets/README.md). Assets are served locally; the trailer is an optional separate file and never autoplays. Reduced-motion/data-saving users retain the static red box and can continue immediately. The model's short animation can also be skipped immediately. Only confirmed choices are saved, so reloading a bulletin resumes at the next Budget or the final results.
+
+These presentation changes retain `envelopes-2026.09-v2`: numerical rules and existing result links are unchanged.
+
 ## Public website design
 
-Local ES modules and system fonts; no frontend framework or third-party browser requests. Three.js loads separately on the introduction, skips reduced-motion/data-saving preferences, and leaves a static fallback without WebGL. Rendering is on demand, pauses when hidden, and disposes resources on navigation.
+Local ES modules and system fonts; no frontend framework or third-party browser requests. Three.js and the original GLB load separately on the introduction and Budget Bulletin, skips reduced-motion/data-saving preferences, and leaves a static fallback without WebGL. Rendering is on demand, pauses when hidden, and disposes resources on navigation. Local blob URLs are permitted only for image loading and connections so the GLB’s embedded texture can decode; external asset origins remain disallowed.
 
 Choices save locally. Result URLs contain validated choices in their fragment. No application analytics or server-side player database is used; Cloudflare infrastructure logs may still exist. Core controls are native buttons/dialogs; the canvas chart has a data table. A full accessibility audit and educational user study are still future work.
 
@@ -84,6 +92,6 @@ npx playwright install chromium
 npm run check:browser
 ```
 
-`npm run check:live` exercises the deployed website. Screenshots go to the ignored `artifacts/` directory. Both scripts accept `BASE_URL` without a trailing slash. `npm run build:social` regenerates the social preview image.
+`npm run check:live` exercises the deployed website. Screenshots go to the ignored `artifacts/` directory. Both scripts accept `BASE_URL` without a trailing slash. With the local app running, `npm run build:social` regenerates the social preview using the Blender model.
 
 GitHub Actions runs build, type and accounting checks on pushes and pull requests. It does not deploy and requires no Cloudflare secrets.

@@ -1,11 +1,21 @@
 import { chromium } from "playwright";
+const base = process.env.BASE_URL || "http://localhost:8787";
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({
-  viewport: { width: 1200, height: 630 },
-  deviceScaleFactor: 1,
-});
-await page.setContent(
-  `<!doctype html><html><body style="margin:0;background:#f7f5ef;color:#232d38;font-family:Arial"><main style="padding:52px 65px;height:526px"><div style="font-size:14px;letter-spacing:3px;color:#852c37;border-bottom:1px solid #dcd9d0;padding-bottom:24px">THE BUDGET BATTLE <span style="float:right;color:#696d6b;font-size:11px">UNITED KINGDOM EDITION</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding-top:44px"><section><h1 style="font:68px/1.06 Georgia;margin:0;letter-spacing:-2px">Everyone wants more.<br><em style="color:#852c37">You do the maths.</em></h1><p style="font-size:20px;color:#696d6b;margin:30px 0">Five Budgets. Five spending envelopes. Your turn at the Treasury.</p><div style="background:#852c37;color:white;display:inline-block;padding:17px 25px;font-size:15px">Take the red box →</div></section><div style="width:220px;height:148px;border-radius:5px;background:#852c37;transform:rotate(-8deg);position:relative;margin-left:40px;text-align:center;color:#e0c389;box-shadow:8px 12px 0 #e7dfd2"><div style="position:absolute;border:7px solid #852c37;width:70px;height:23px;top:-30px;left:68px;border-radius:6px 6px 0 0"></div><div style="padding-top:38px;font:18px/1.8 Georgia;letter-spacing:2px">THE BUDGET<br>YOUR CALL.</div></div></div><p style="font-size:12px;color:#696d6b;margin-top:38px">Independent strategy game · Illustrative training assumptions · No sign-up</p></main></body></html>`,
-);
-await page.screenshot({ path: "public/social-card.png" });
-await browser.close();
+try {
+  const page = await browser.newPage({
+    viewport: { width: 1200, height: 630 },
+    deviceScaleFactor: 1,
+  });
+  await page.route("**/__social__", (r) =>
+    r.fulfill({
+      contentType: "text/html; charset=utf-8",
+      body: `<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#f7f5ef;color:#232d38;font-family:Arial}main{padding:45px 58px}header{font-size:13px;letter-spacing:3px;color:#852c37;border-bottom:1px solid #dcd9d0;padding-bottom:24px}header span{float:right;color:#696d6b;font-size:11px}.hero{display:flex;align-items:center;justify-content:space-between;padding-top:25px}section{width:660px;flex-shrink:0}h1{font:64px/1.07 Georgia;margin:0;letter-spacing:-2px}em{color:#852c37}p{font-size:18px;color:#696d6b;margin:25px 0}.cta{background:#852c37;color:white;display:inline-block;padding:16px 23px;font-size:15px}.box-stage{width:400px;height:355px;flex-shrink:0}.box-canvas{width:100%;height:100%}.note{font-size:12px;margin-top:25px}</style></head><body><main><header>THE BUDGET BATTLE <span>UNITED KINGDOM EDITION</span></header><div class="hero"><section><h1>Everyone wants more.<br><em>You do the maths.</em></h1><p>Five Budgets. Five spending envelopes.<br>Your turn at the Treasury.</p><div class="cta">Take the red box →</div></section><div class="box-stage"></div></div><p class="note">Independent strategy game · Illustrative training assumptions · No sign-up</p></main><script type="module">import {mountBox} from '/box.bundle.js';mountBox(document.querySelector('.box-stage'));</script></body></html>`,
+    }),
+  );
+  await page.goto(base + "/__social__");
+  await page.waitForSelector(".box-canvas");
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: "public/social-card.png" });
+} finally {
+  await browser.close();
+}

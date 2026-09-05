@@ -34,9 +34,30 @@ try {
     if (round <= 3) await page.click('[data-control="income"][data-level="1"]');
     await page.click('[data-action="review"]');
     await page.click('[data-action="commit"]');
+    assert.ok(await page.locator("#edition-heading").isVisible());
+    if (round === 1)
+      await page.waitForSelector('.box-canvas[data-animation="complete"]');
+    await page.click('[data-action="continue"]');
   }
   const result = JSON.parse(await page.evaluate(() => render_game_to_text()));
   assert.ok(result.result.passed);
+  const newspaperDownload = page.waitForEvent("download");
+  await page.click('[data-action="newspaper"]');
+  const newspaper = await newspaperDownload;
+  await newspaper.saveAs("artifacts/live/live-front-page.png");
+  const png = await fs.readFile(await newspaper.path());
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 1720);
+  for (const path of [
+    "/assets/red-box.glb",
+    "/assets/health.png",
+    "/assets/welfare.png",
+    "/assets/defence.png",
+    "/assets/investment.png",
+    "/assets/other.png",
+    "/assets/launch-trailer.mp4",
+  ])
+    assert.equal((await page.request.get(base + path)).status(), 200);
   await page.click('[data-action="share"]');
   const url = await page.evaluate(() => navigator.clipboard.readText());
   assert.ok(url.startsWith(base + "/#result="));
@@ -70,7 +91,9 @@ try {
         checks: [
           "HTTPS",
           "security headers",
-          "3D loads",
+          "Blender model and completed opening animation",
+          "all public visual assets",
+          "newspaper PNG download",
           "five rounds",
           "unfunded Budget blocked",
           "funding announcement",

@@ -28,6 +28,13 @@ try {
   await page.keyboard.press("Escape");
   await page.click('[data-shock="energy"]');
   await page.click("#start-btn");
+  await page.waitForFunction(
+    () =>
+      [...document.querySelectorAll(".envelope-icon")].length === 5 &&
+      [...document.querySelectorAll(".envelope-icon")].every(
+        (i) => i.complete && i.naturalWidth === 256,
+      ),
+  );
   const set = async (p, id, value) =>
     p.click(`[data-control="${id}"][data-level="${value}"]`);
   for (const id of ["health", "welfare", "defence", "investment", "other"])
@@ -61,6 +68,13 @@ try {
   );
   await page.click('[data-action="review"]');
   await page.click('[data-action="commit"]');
+  assert.ok(await page.locator("#edition-heading").isVisible());
+  await page.waitForSelector('.box-canvas[data-animation="complete"]');
+  await page.screenshot({
+    path: "artifacts/browser/budget-bulletin-desktop.png",
+    fullPage: true,
+  });
+  await page.click('[data-action="continue"]');
   await page.reload();
   await page.click('[data-action="resume"]');
   assert.equal(
@@ -74,6 +88,13 @@ try {
     if (round <= 3) await set(page, "income", 1);
     await page.click('[data-action="review"]');
     await page.click('[data-action="commit"]');
+    assert.ok(await page.locator("#edition-heading").isVisible());
+    await page.waitForSelector('.box-canvas[data-animation="complete"]');
+    await page.screenshot({
+      path: "artifacts/browser/budget-bulletin-desktop.png",
+      fullPage: true,
+    });
+    await page.click('[data-action="continue"]');
   }
   assert.equal(
     JSON.parse(await page.evaluate(() => render_game_to_text())).mode,
@@ -83,6 +104,13 @@ try {
     path: "artifacts/browser/results-desktop.png",
     fullPage: true,
   });
+  const newspaperDownload = page.waitForEvent("download");
+  await page.click('[data-action="newspaper"]');
+  const newspaper = await newspaperDownload;
+  await newspaper.saveAs("artifacts/browser/my-front-page.png");
+  const png = await fs.readFile(await newspaper.path());
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 1720);
   const downloadPromise = page.waitForEvent("download");
   await page.click('[data-action="download"]');
   const download = await downloadPromise;
@@ -176,6 +204,21 @@ try {
     ),
     false,
   );
+  await set(shared, "income", 1);
+  await shared.click('[data-action="review"]');
+  await shared.click('[data-action="commit"]');
+  await shared.waitForSelector('.box-canvas[data-animation="complete"]');
+  await shared.screenshot({
+    path: "artifacts/browser/budget-bulletin-mobile.png",
+    fullPage: true,
+  });
+  assert.equal(
+    await shared.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await shared.click('[data-action="continue"]');
   const reduced = await browser.newPage({ reducedMotion: "reduce" });
   await reduced.goto(base);
   await reduced.waitForTimeout(200);
@@ -187,13 +230,20 @@ try {
   await reduced.keyboard.press("Enter");
   assert.ok(await reduced.locator("dialog").isVisible());
   await reduced.keyboard.press("Escape");
+  await reduced.locator('[data-action="review"]').click();
+  await reduced.click('[data-action="commit"]');
+  assert.ok(await reduced.locator("#edition-heading").isVisible());
+  assert.equal(await reduced.locator(".box-canvas").count(), 0);
+  await reduced.click('[data-action="continue"]');
   assert.deepEqual(errors, []);
   console.log(
     JSON.stringify(
       {
         passed: true,
         checks: [
-          "3D introduction",
+          "Blender model and complete lid animation",
+          "Budget Bulletin desktop/mobile",
+          "newspaper PNG export",
           "methodology modal",
           "size controls and reset",
           "unfunded settlement blocked",

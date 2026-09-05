@@ -11,6 +11,7 @@ import {
   choiceLevel,
 } from "./scenario.js";
 import { simulate, validateGame, policyCost } from "./engine.js";
+import { budgetStory, newspaperPNG } from "./newspaper.js";
 const $ = (s) => document.querySelector(s),
   money = (n) => `${n < 0 ? "−" : ""}£${Math.abs(n).toFixed(1)}bn`,
   signed = (n) => `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toFixed(1)}`;
@@ -70,7 +71,7 @@ function intro() {
 function getGame(includePending = true) {
   return {
     decisions:
-      includePending && state.decisions.length < 5
+      includePending && state.mode === "game" && state.decisions.length < 5
         ? [...state.decisions, state.pending]
         : state.decisions,
     shock: state.shock,
@@ -100,7 +101,7 @@ function controlHTML(c) {
   const amount = borrowing
     ? current().budgets[n].ceiling
     : (spending ? c.base : 0) + groupCost(c.id, n);
-  return `<article class="envelope"><div class="envelope-description"><h2>${c.title}</h2><p>${borrowing ? "Maximum borrowing this year against the shock-adjusted baseline. This is a limit, not a receipt; unused room is not spent." : c.note}</p><details><summary>Amounts & effects</summary><p>${borrowing ? "Reduce = £20bn below existing plans; hold = existing plans; allow more = £30bn above. Actual borrowing is calculated from your spending, taxes and interest." : `Each ${spending ? "grow or squeeze" : "raise or cut"} changes eventual annual ${spending ? "spending" : "revenue"} by £${c.step}bn. Hold adds no new change; earlier decisions continue. ${spending ? `Starting cash envelope: £${c.base}bn; no inflation adjustment. Capacity changes by ${c.service} points per step after ${c.lag} year(s).` : "Revenue figures are changes from the baseline, not total tax receipts."} Household ${spending ? "relief from grow" : "pressure from raise"}, lowest to highest income: ${c.pressure.join(", ")} points; opposite choices reverse these points. ${c.id === "investment" ? "Maintenance and catch-up costs remain even if later investment decisions reverse direction." : ""}`}</p></details></div><div class="envelope-setting"><div class="envelope-amount"><strong>${borrowing || spending ? money(amount) : `${signed(-amount)}bn`}</strong><span>${borrowing ? "borrowing ceiling" : spending ? "this year’s envelope" : "revenue vs existing plans"}</span></div><div class="size-options" role="group" aria-label="${c.title}">${[-1, 0, 1].map((v) => `<button data-control="${c.id}" data-level="${v}" aria-pressed="${v === level}" class="${v === level ? "active" : ""}">${borrowing ? BORROWING[v + 1].title : (spending ? ["Squeeze", "Hold", "Grow"] : ["Cut", "Hold", "Raise"])[v + 1]}<small>${borrowing ? `${signed(BORROWING[v + 1].cap)}bn` : v === 0 ? "No new change" : `${signed(v * c.step)}bn / yr`}</small></button>`).join("")}</div></div></article>`;
+  return `<article class="envelope"><div class="envelope-description">${spending ? `<img class="envelope-icon" src="/assets/${c.id}.png" width="70" height="70" alt="" decoding="async">` : ""}<h2>${c.title}</h2><p>${borrowing ? "Maximum borrowing this year against the shock-adjusted baseline. This is a limit, not a receipt; unused room is not spent." : c.note}</p><details><summary>Amounts & effects</summary><p>${borrowing ? "Reduce = £20bn below existing plans; hold = existing plans; allow more = £30bn above. Actual borrowing is calculated from your spending, taxes and interest." : `Each ${spending ? "grow or squeeze" : "raise or cut"} changes eventual annual ${spending ? "spending" : "revenue"} by £${c.step}bn. Hold adds no new change; earlier decisions continue. ${spending ? `Starting cash envelope: £${c.base}bn; no inflation adjustment. Capacity changes by ${c.service} points per step after ${c.lag} year(s).` : "Revenue figures are changes from the baseline, not total tax receipts."} Household ${spending ? "relief from grow" : "pressure from raise"}, lowest to highest income: ${c.pressure.join(", ")} points; opposite choices reverse these points. ${c.id === "investment" ? "Maintenance and catch-up costs remain even if later investment decisions reverse direction." : ""}`}</p></details></div><div class="envelope-setting"><div class="envelope-amount"><strong>${borrowing || spending ? money(amount) : `${signed(-amount)}bn`}</strong><span>${borrowing ? "borrowing ceiling" : spending ? "this year’s envelope" : "revenue vs existing plans"}</span></div><div class="size-options" role="group" aria-label="${c.title}">${[-1, 0, 1].map((v) => `<button data-control="${c.id}" data-level="${v}" aria-pressed="${v === level}" class="${v === level ? "active" : ""}">${borrowing ? BORROWING[v + 1].title : (spending ? ["Squeeze", "Hold", "Grow"] : ["Cut", "Hold", "Raise"])[v + 1]}<small>${borrowing ? `${signed(BORROWING[v + 1].cap)}bn` : v === 0 ? "No new change" : `${signed(v * c.step)}bn / yr`}</small></button>`).join("")}</div></div></article>`;
 }
 function fundingBridge(result, n) {
   const y = result.years[n],
@@ -196,6 +197,14 @@ function review() {
     `<div class="eyebrow">BEFORE YOU OPEN THE RED BOX</div><h2>Review Budget ${n + 1}</h2><p>These are changes to the previous settlement. Earlier commitments continue.</p><ul>${state.pending.map((id) => `<li>${CARDS.find((c) => c.id === id).title}</li>`).join("")}</ul><div class="review-total"><span>Actual borrowing / ceiling ${money(result.budgets[n].ceiling)}</span><strong>${money(y.borrowing)}</strong><small>${signed(y.delta)}bn against existing plans</small></div><p>Year 5 underlying deficit improvement (target £40bn): <strong>${signed(result.annualImprovement)}bn</strong>. Years 6–10 cumulative underlying improvement (target £200bn): <strong>${signed(result.legacyImprovement)}bn</strong>.</p><p>Lowest household score across ten years: ${signed(result.worstPressure)} points. Lowest capacity: ${signed(result.worstService)} points. Both floors are −5. Later investment bills are already included.</p><div class="modal-actions"><button class="secondary" data-action="close">Keep editing</button><button class="primary" data-action="commit">Confirm Budget ${n + 1} →</button></div>`,
   );
 }
+function recapPage() {
+  const n = state.decisions.length - 1,
+    game = getGame(false),
+    story = budgetStory(game, n),
+    result = simulate(game),
+    y = result.years[n];
+  return `${header()}<main id="main" class="budget-edition"><div class="edition-kicker">THE MORNING AFTER / BUDGET ${n + 1}</div><div class="edition-masthead">The Budget Bulletin</div><div class="edition-meta"><span>YOUR DECISIONS, IN PRINT</span><span>${SHOCKS[state.shock].name.toUpperCase()}</span></div><div class="edition-lead"><section><h1 id="edition-heading" tabindex="-1">${story.headline}</h1><p class="edition-deck">${story.deck}</p></section><div class="box-stage edition-box" aria-label="Your red box opens"><div class="red-box"><span class="handle"></span><span class="box-lock">◆</span><span class="box-label">THE BUDGET<br><b>YOUR CALL.</b></span></div></div></div><div class="edition-numbers"><div><span>NEW SPENDING THIS YEAR</span><strong>${signed(story.cost)}<small>£bn</small></strong></div><div><span>NEW TAX RECEIPTS THIS YEAR</span><strong>${signed(story.revenue)}<small>£bn</small></strong></div><div><span>ACTUAL BORROWING</span><strong>${money(y.borrowing)}</strong></div></div><section class="edition-follow"><div><div class="eyebrow">WHEN THE EFFECTS ARRIVE</div><p>${story.delayed.length ? story.delayed.join(" ") : "Earlier commitments continue. The ten-year ledger includes all remaining ramps and later bills."}</p></div><div><div class="eyebrow">THE WHOLE SETTLEMENT</div><p>Borrowing is ${money(y.borrowing)} against a ceiling of ${money(result.budgets[n].ceiling)}. This includes earlier decisions and interest.</p></div></section><div class="edition-footer"><p>Illustrative training scenario. This headline describes your choices; it is not a news report or a forecast.</p><button class="primary" data-action="continue">${n === 4 ? "Read your full legacy" : "Next Budget"} <span>→</span></button></div></main>${footer()}`;
+}
 function resultPage() {
   const result = current(),
     last = result.years[4],
@@ -237,7 +246,7 @@ function resultPage() {
     )
     .join(
       "",
-    )}</div></div><p class="micro">These are disclosed training-game thresholds, not an economic sustainability assessment. No political score is used.</p><section class="chart-panel">${chart(result, true)}</section><section class="legacy-grid"><div><div class="eyebrow">THE FIVE YEARS AFTER YOU LEAVE</div><h2>Your legacy keeps running.</h2><p>Earlier settlements stay in place. Investment maintenance and catch-up bills arrive. There are no new decisions in years 6–10.</p><div class="legacy-number">${signed(result.legacyImprovement)}<span>£bn cumulative underlying improvement<br>in years 6–10</span></div><p class="micro">Model debt at year 10: ${result.years[9].debtRatio.toFixed(1)}% of GDP; existing plans ${result.years[9].baseDebtRatio.toFixed(1)}%. A simplified debt accumulation, not official PSND.</p></div><div><div class="eyebrow">WHO FEELS IT / YEAR 5</div><h2>Households aren’t an average.</h2><div class="households">${last.pressure.map((v, i) => `<div><span>${["Lowest", "Lower-middle", "Middle", "Upper-middle", "Highest"][i]} income</span><strong class="${v < 0 ? "negative" : "positive"}">${signed(v)} pts</strong></div>`).join("")}</div><p class="micro">Illustrative pressure/relief points. Not estimated disposable income. Points include tax and spending effects. Capacity is also shown separately.</p></div></section><section class="record"><div class="eyebrow">YOUR RECORD</div><h2>Five Budgets, in the books.</h2>${state.decisions.map((ids, i) => `<div><span>0${i + 1}</span><p>${ids.length ? ids.map((id) => CARDS.find((c) => c.id === id).title).join(" · ") : "Kept existing plans"}</p></div>`).join("")}</section><div class="result-actions"><button class="primary" data-action="share">Copy your result link ↗</button><button class="secondary" data-action="download">Download your record</button><button class="text-button" data-action="restart">Try another approach →</button></div><p class="micro">Sharing includes all your choices, the scenario, safeguards and model version.</p></main>${footer()}`;
+    )}</div></div><p class="micro">These are disclosed training-game thresholds, not an economic sustainability assessment. No political score is used.</p><section class="chart-panel">${chart(result, true)}</section><section class="legacy-grid"><div><div class="eyebrow">THE FIVE YEARS AFTER YOU LEAVE</div><h2>Your legacy keeps running.</h2><p>Earlier settlements stay in place. Investment maintenance and catch-up bills arrive. There are no new decisions in years 6–10.</p><div class="legacy-number">${signed(result.legacyImprovement)}<span>£bn cumulative underlying improvement<br>in years 6–10</span></div><p class="micro">Model debt at year 10: ${result.years[9].debtRatio.toFixed(1)}% of GDP; existing plans ${result.years[9].baseDebtRatio.toFixed(1)}%. A simplified debt accumulation, not official PSND.</p></div><div><div class="eyebrow">WHO FEELS IT / YEAR 5</div><h2>Households aren’t an average.</h2><div class="households">${last.pressure.map((v, i) => `<div><span>${["Lowest", "Lower-middle", "Middle", "Upper-middle", "Highest"][i]} income</span><strong class="${v < 0 ? "negative" : "positive"}">${signed(v)} pts</strong></div>`).join("")}</div><p class="micro">Illustrative pressure/relief points. Not estimated disposable income. Points include tax and spending effects. Capacity is also shown separately.</p></div></section><section class="record"><div class="eyebrow">YOUR RECORD</div><h2>Five Budgets, in the books.</h2>${state.decisions.map((ids, i) => `<div><span>0${i + 1}</span><p>${ids.length ? ids.map((id) => CARDS.find((c) => c.id === id).title).join(" · ") : "Kept existing plans"}</p></div>`).join("")}</section><div class="result-actions"><button class="primary" data-action="share">Copy your result link ↗</button><button class="secondary" data-action="newspaper">Download your front page</button><button class="text-button" data-action="download">Download data</button><button class="text-button" data-action="restart">Try another approach →</button></div><p class="micro">Sharing includes all your choices, the scenario, safeguards and model version.</p></main>${footer()}`;
 }
 function showDialog(html) {
   $("#method-content").innerHTML =
@@ -275,16 +284,22 @@ function render() {
       ? intro()
       : state.mode === "results"
         ? resultPage()
-        : game();
-  if (state.mode !== "intro") drawChart(current(), state.mode === "results");
-  else if (
+        : state.mode === "recap"
+          ? recapPage()
+          : game();
+  if (state.mode === "game" || state.mode === "results")
+    drawChart(current(), state.mode === "results");
+  if (
+    (state.mode === "intro" || state.mode === "recap") &&
     !matchMedia("(prefers-reduced-motion: reduce)").matches &&
     !navigator.connection?.saveData
   )
     void import("./box.bundle.js")
       .then(({ mountBox }) => {
         if (generation === renderGeneration)
-          disposeBox = mountBox($(".box-stage"));
+          disposeBox = mountBox($(".box-stage"), {
+            open: state.mode === "recap",
+          });
       })
       .catch(() => {});
 }
@@ -332,12 +347,38 @@ async function action(a) {
     state.decisions.push([...state.pending]);
     state.pending = defaultChoices();
     state.stage = "spending";
-    state.mode = state.decisions.length === 5 ? "results" : "game";
+    state.mode = "recap";
     save();
     $("#method").close();
     render();
     window.scrollTo(0, 0);
+    $("#edition-heading")?.focus({ preventScroll: true });
+  }
+  if (a === "continue") {
+    state.mode = state.decisions.length === 5 ? "results" : "game";
+    render();
+    window.scrollTo(0, 0);
     $("#round-heading")?.focus({ preventScroll: true });
+  }
+  if (a === "newspaper") {
+    const button = document.querySelector('[data-action="newspaper"]');
+    button.disabled = true;
+    try {
+      const blob = await newspaperPNG(getGame(false)),
+        url = URL.createObjectURL(blob),
+        a = document.createElement("a");
+      a.href = url;
+      a.download = "my-budget-front-page.png";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast("Your front page is ready to share.");
+    } catch {
+      toast(
+        "Your browser could not create the image. Your result link and data download are still available.",
+      );
+    } finally {
+      button.disabled = false;
+    }
   }
   if (a === "restart") restart();
   if (a === "reset") {

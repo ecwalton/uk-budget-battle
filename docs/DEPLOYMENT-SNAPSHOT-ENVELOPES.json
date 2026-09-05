@@ -1,0 +1,20 @@
+{
+  "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
+  "worker": "uk-budget-battle",
+  "deploymentVersion": "c1a3247e-c274-481b-ac98-2d527cc8d3d3",
+  "scenarioVersion": "envelopes-2026.09-v2",
+  "recorded": "2026-09-05",
+  "scope": "Envelope rewrite source and public artifacts deployed and checked on 5 September 2026.",
+  "sha256": {
+    "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+    "public/index.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
+    "public/box.bundle.js": "9a9e58760f360a21b8d2e29d07a6ad140587fa6f38305d45a205551d8fea9e01",
+    "public/social-card.png": "a94e28036d1c663f7a79ee3ac628b9f923f5377500b02f9918c6e0be69181ca0",
+    "public/_headers": "9e688e5e1ecce06444e8e4256ade6c403de213995b5bf8e57953e832d4239c6d",
+    "public/style.css": "5c314616a629eff20bf53f9679f8920852cfbd8c31359df8cfe583396194ea8a",
+    "public/engine.js": "918458f6aa33fe95ddc126fff7a8c1b2bb6846d0f93dca3d5887ee434ad21dc1",
+    "public/app.js": "56b7b2d3c69dbedbe529f1f153d7e0056a4883ede18cba9abead4cb32b68edf6",
+    "public/scenario.js": "4d0743d57281e5ae92ac6126104aa76744b01a7d92e06a90431a3ebf0ef21f0e",
+    "src/index.ts": "67f4148137b240e6ce1c5b4d741eb407bece1f16fcceb3fff5fbfd49c32d0924"
+  }
+}
