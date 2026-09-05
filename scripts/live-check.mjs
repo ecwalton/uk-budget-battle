@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
+import { SCENARIO } from "../public/scenario.js";
 const base =
   process.env.BASE_URL || "https://uk-budget-battle.openuk-co.workers.dev";
 await fs.mkdir("artifacts/live", { recursive: true });
@@ -18,14 +19,19 @@ try {
   assert.ok(response.headers()["content-security-policy"]);
   await page.waitForSelector(".box-canvas");
   await page.click("#start-btn");
-  for (const ids of [
-    ["income", "procurement"],
-    ["thresholds"],
-    ["compliance"],
-    [],
-    ["reliefs"],
-  ]) {
-    for (const id of ids) await page.click(`[data-card="${id}"]`);
+  await page.click('[data-control="health"][data-level="1"]');
+  assert.ok(
+    (await page.locator("#budget-status").textContent()).includes(
+      "£12.0bn still to fund",
+    ),
+  );
+  await page.click('[data-action="funding"]');
+  assert.ok(await page.locator('[data-action="review"]').isDisabled());
+  await page.click('[data-action="spending"]');
+  await page.click('[data-control="health"][data-level="0"]');
+  for (let round = 1; round <= 5; round++) {
+    await page.click('[data-action="funding"]');
+    if (round <= 3) await page.click('[data-control="income"][data-level="1"]');
     await page.click('[data-action="review"]');
     await page.click('[data-action="commit"]');
   }
@@ -42,7 +48,10 @@ try {
   );
   const health = await page.request.get(base + "/api/health");
   assert.equal(health.status(), 200);
-  assert.equal((await health.json()).ok, true);
+  assert.deepEqual(await health.json(), {
+    ok: true,
+    version: SCENARIO.version,
+  });
   assert.equal(
     (await page.request.get(base + "/social-card.png")).status(),
     200,
@@ -63,6 +72,9 @@ try {
           "security headers",
           "3D loads",
           "five rounds",
+          "unfunded Budget blocked",
+          "funding announcement",
+          "deployed model version",
           "winning result",
           "actual clipboard share",
           "shared result parity",

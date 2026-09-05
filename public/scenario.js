@@ -1,13 +1,13 @@
 // Training assumptions, deliberately independent of any claimed official costing.
 export const SCENARIO = {
-  version: "training-2026.09-v1",
+  version: "envelopes-2026.09-v2",
   title: "The first five Budgets",
   baseline: [130, 118, 105, 93, 80, 76, 72, 68, 64, 60],
   startingDebt: 2850,
   startingGDP: 3000,
   nominalGrowth: 0.04,
   marginalInterest: 0.03, // Applied to last year's incremental debt, not the full stock.
-  target: 15,
+  target: 40,
   serviceFloor: -5,
   pressureFloor: -5,
   disclaimer:
@@ -53,215 +53,140 @@ export const SHOCKS = {
     rate: 0.01,
   },
 };
+// Envelopes are illustrative, non-overlapping annual baselines in £bn.
+// A setting is an incremental change to the previous settlement, not a reset.
+export const ENVELOPES = [
+  {
+    id: "health",
+    title: "Health & care",
+    base: 240,
+    step: 12,
+    service: 1.4,
+    lag: 1,
+    pressure: [0.5, 0.4, 0.3, 0.2, 0.1],
+    note: "Day-to-day health and care funding. Capacity takes a year to respond.",
+  },
+  {
+    id: "welfare",
+    title: "Welfare & pensions",
+    base: 320,
+    step: 16,
+    service: 0,
+    lag: 0,
+    pressure: [1, 0.8, 0.5, 0.3, 0.2],
+    note: "Benefits and state pensions. Changes phase in: half this year, the full amount next year.",
+  },
+  {
+    id: "defence",
+    title: "Defence",
+    base: 65,
+    step: 12,
+    service: 0.6,
+    lag: 1,
+    pressure: [0.1, 0.1, 0.1, 0.1, 0.1],
+    note: "Day-to-day security funding. Each grow adds £12bn a year; equipment investment sits below.",
+  },
+  {
+    id: "investment",
+    title: "Public investment",
+    base: 100,
+    step: 15,
+    service: 1.2,
+    lag: 2,
+    pressure: [0.4, 0.3, 0.2, 0.1, 0.1],
+    note: "Capital across all services, housing and infrastructure. Growth adds £3bn maintenance from year four; a squeeze brings a £6bn catch-up bill in year four.",
+  },
+  {
+    id: "other",
+    title: "Everything else",
+    base: 300,
+    step: 12,
+    service: 1.2,
+    lag: 1,
+    pressure: [0.5, 0.4, 0.3, 0.2, 0.1],
+    note: "Other day-to-day services, including education, justice, councils and administration.",
+  },
+];
+export const TAXES = [
+  {
+    id: "income",
+    title: "Income tax",
+    step: 15,
+    pressure: [0.1, 0.2, 0.35, 0.5, 0.7],
+    note: "A broad revenue package, with more direct pressure on higher incomes. Not a costing of a 1p rate change.",
+  },
+  {
+    id: "vat",
+    title: "VAT",
+    step: 15,
+    pressure: [0.8, 0.7, 0.5, 0.35, 0.25],
+    note: "A broad consumption-tax package. Lower-income households feel more pressure relative to their resources.",
+  },
+  {
+    id: "business",
+    title: "Business & wealth taxes",
+    step: 12,
+    pressure: [0.05, 0.1, 0.15, 0.4, 0.8],
+    note: "A combined illustrative package. Half the revenue arrives this year, all next year. Cautious delivery halves receipts; tax cuts retain their full cost.",
+  },
+];
+export const BORROWING = [
+  { level: -1, title: "Reduce", cap: -20 },
+  { level: 0, title: "Hold", cap: 0 },
+  { level: 1, title: "Allow more", cap: 30 },
+];
+export const CONTROLS = [
+  ...ENVELOPES,
+  ...TAXES,
+  { id: "borrowing", title: "Borrowing allowance" },
+];
+export const choiceId = (id, level) => `${id}:${level}`;
+export const defaultChoices = () => CONTROLS.map((c) => choiceId(c.id, 0));
+export const choiceLevel = (ids, id) =>
+  Number(ids.find((x) => x.startsWith(id + ":"))?.split(":")[1] ?? 0);
+// The accounting engine retains annual cost profiles, lags and one-off bills.
+export const CARDS = CONTROLS.flatMap((c) =>
+  [-1, 0, 1].map((level) => {
+    const spending = ENVELOPES.includes(c),
+      tax = TAXES.includes(c);
+    let cost = [0];
+    if (spending)
+      cost =
+        c.id === "welfare"
+          ? [(level * c.step) / 2, level * c.step]
+          : [level * c.step];
+    if (c.id === "investment" && level === 1) cost = [15, 15, 15, 18];
+    if (c.id === "investment" && level === -1) cost = [-15, -15, -15, -9, -15];
+    if (tax)
+      cost =
+        c.id === "business"
+          ? [(-level * c.step) / 2, -level * c.step]
+          : [-level * c.step];
+    const label =
+      c.id === "borrowing"
+        ? BORROWING.find((b) => b.level === level).title
+        : (spending ? ["Squeeze", "Hold", "Grow"] : ["Cut", "Hold", "Raise"])[
+            level + 1
+          ];
+    return {
+      id: choiceId(c.id, level),
+      group: c.id,
+      level,
+      title: `${c.title}: ${label}`,
+      cost,
+      service: spending ? level * c.service : 0,
+      lag: c.lag ?? 0,
+      pressure: (c.pressure ?? [0, 0, 0, 0, 0]).map(
+        (x) => x * level * (tax ? -1 : 1),
+      ),
+      uncertain: c.id === "business" && level === 1,
+    };
+  }),
+);
 export const ROUNDS = [
-  {
-    label: "The waiting room",
-    title: "The NHS needs an answer.",
-    text: "Health leaders want more capacity. Taxpayers want breathing room. Your first Budget sets the tone.",
-    voice: "“A promise of better care needs people, buildings and time.”",
-    speaker: "The health secretary",
-    cards: ["health", "income", "procurement"],
-  },
-  {
-    label: "The next generation",
-    title: "What can you afford to postpone?",
-    text: "Schools need support. Investment is easy to delay. The savings arrive before the consequences.",
-    voice: "“A repair put off today still has to be paid for tomorrow.”",
-    speaker: "Your Treasury adviser",
-    cards: ["schools", "thresholds", "capital"],
-  },
-  {
-    label: "Promises under pressure",
-    title: "Every commitment has a cost.",
-    text: "Defence, pensions and tax enforcement compete for room in the same Budget.",
-    voice:
-      "“Some changes save money slowly. The opposition will react immediately.”",
-    speaker: "The chief whip",
-    cards: ["defence", "pensions", "compliance"],
-  },
-  {
-    label: "Building tomorrow",
-    title: "A quick fix or a lasting change?",
-    text: "Housing investment takes time. An asset sale brings cash once. Consumption taxes are felt widely.",
-    voice: "“Selling the family silver only pays the bill once.”",
-    speaker: "Your permanent secretary",
-    cards: ["housing", "vat", "land"],
-  },
-  {
-    label: "The final red box",
-    title: "What will your successor inherit?",
-    text: "This is your last Budget. Commitments continue after you leave. Look beyond the next headline.",
-    voice: "“The books do not close when your term ends.”",
-    speaker: "Your Treasury adviser",
-    cards: ["care", "reliefs", "defer"],
-  },
-];
-const card = (
-  id,
-  title,
-  category,
-  cost,
-  service,
-  pressure,
-  note,
-  extra = {},
-) => ({
-  id,
-  title,
-  category,
-  cost,
-  service,
-  pressure,
-  note,
-  lag: 0,
-  scope: "UK funding envelope",
-  certainty: "Illustrative assumption",
-  ...extra,
-});
-export const CARDS = [
-  card(
-    "health",
-    "Fund health capacity",
-    "Public services",
-    [6],
-    3,
-    [0, 0, 0, 0, 0],
-    "A recurring UK health funding envelope. Each administration chooses delivery. Capacity builds from the following year.",
-    { lag: 1 },
-  ),
-  card(
-    "income",
-    "Raise income tax revenue",
-    "Taxation",
-    [-7],
-    0,
-    [-0.3, -0.6, -1, -1.5, -2],
-    "An illustrative recurring tax package. Higher-income groups carry more of the direct burden. This is not a costing of a 1p rate change.",
-  ),
-  card(
-    "procurement",
-    "Reform procurement",
-    "Reform",
-    [1, 0, -1, -2],
-    0,
-    [0, 0, 0, 0, 0],
-    "Pay for implementation first. Annual net savings build to £2bn. Delivery may disappoint; see sensitivity mode.",
-    { uncertain: true },
-  ),
-  card(
-    "schools",
-    "Support schools and SEND",
-    "Public services",
-    [4],
-    2,
-    [0, 0, 0, 0, 0],
-    "An extra UK funding envelope above the training baseline, with benefits from the following year.",
-    { lag: 1 },
-  ),
-  card(
-    "thresholds",
-    "Extend a threshold freeze",
-    "Taxation",
-    [-6],
-    0,
-    [-0.2, -0.8, -1.1, -1.4, -1.5],
-    "Raises recurring revenue through fiscal drag. These are toy distribution points, not household income estimates.",
-  ),
-  card(
-    "capital",
-    "Reduce capital investment",
-    "Investment",
-    [-5],
-    -2,
-    [0, 0, 0, 0, 0],
-    "A lasting £5bn annual reduction. Service-capacity losses start two years later and remain visible after your term.",
-    { lag: 2 },
-  ),
-  card(
-    "defence",
-    "Increase defence funding",
-    "Security",
-    [4],
-    1,
-    [0, 0, 0, 0, 0],
-    "A recurring UK security commitment. The public-capacity score includes security provision, not only domestic services.",
-    { lag: 1 },
-  ),
-  card(
-    "pensions",
-    "Change future pension uprating",
-    "Pensions",
-    [-0.5, -1, -2, -3, -4],
-    0,
-    [-0.5, -0.7, -0.8, -0.7, -0.5],
-    "Changes future increases, not current cash pensions. Savings phase in; pensioners are affected within every income group.",
-  ),
-  card(
-    "compliance",
-    "Invest in tax enforcement",
-    "Reform",
-    [1.2, 0.2, -1, -2, -3],
-    0,
-    [0, 0, 0, 0, 0],
-    "Build enforcement capacity before collecting extra revenue. Net savings reach £3bn annually in year five after adoption.",
-    { uncertain: true },
-  ),
-  card(
-    "housing",
-    "Build affordable homes",
-    "Investment",
-    [5, 5, 5, 1],
-    2,
-    [0.6, 0.4, 0.2, 0, 0],
-    "Three years of investment, then £1bn annual maintenance. Capacity and household benefits begin after two years.",
-    { lag: 2 },
-  ),
-  card(
-    "vat",
-    "Raise consumption tax revenue",
-    "Taxation",
-    [-8],
-    0,
-    [-2, -1.8, -1.4, -1.1, -0.8],
-    "An illustrative broad consumption-tax package. Lower-income groups bear more pressure relative to resources.",
-  ),
-  card(
-    "land",
-    "Sell surplus public land",
-    "One-off",
-    [-3, 0.15],
-    0,
-    [0, 0, 0, 0, 0],
-    "A non-financial asset disposal yields £3bn once, followed by £0.15bn annual lost income. No recurring receipt.",
-    { scope: "UK public estate", oneOff: true },
-  ),
-  card(
-    "care",
-    "Strengthen social care",
-    "Public services",
-    [4],
-    3,
-    [0.3, 0.2, 0.1, 0, 0],
-    "A recurring funding envelope across administrations. Care capacity and household benefits start next year.",
-    { lag: 1 },
-  ),
-  card(
-    "reliefs",
-    "Limit selected tax reliefs",
-    "Taxation",
-    [-4],
-    0,
-    [0, 0, -0.1, -0.4, -1.2],
-    "An illustrative package concentrated on higher-income households. Actual reliefs require individual legal and behavioural analysis.",
-  ),
-  card(
-    "defer",
-    "Defer maintenance",
-    "Deferral",
-    [-3, 0, 0, 5],
-    -2,
-    [0, 0, 0, 0, 0],
-    "Save £3bn now; a £5bn catch-up bill arrives three years later. Capacity recovers once the work is completed.",
-    { lag: 1, oneOff: true, serviceDuration: 2 },
-  ),
-];
+  "Set the direction",
+  "Build on your choices",
+  "Meet the pressure",
+  "Make room",
+  "Leave a settlement",
+].map((label) => ({ label, cards: CARDS.map((c) => c.id) }));

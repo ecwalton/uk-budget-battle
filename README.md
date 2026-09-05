@@ -2,7 +2,18 @@
 
 [Play the live prototype](https://uk-budget-battle.openuk-co.workers.dev) · [Independent model handoff](HANDOFF.md) · [Economic model assessment](MODEL-INTEGRATION.md)
 
-A public-facing UK fiscal strategy **prototype** on Cloudflare Workers. Five Budget rounds, 15 policy cards, a ten-year ledger, three repeatable scenarios, save/resume, result links and JSON downloads.
+A public-facing UK fiscal strategy **prototype** on Cloudflare Workers. Five Budgets with spending envelopes and funding controls, a ten-year ledger, three repeatable scenarios, save/resume, result links and JSON downloads.
+
+## How a Budget works
+
+1. Set health and care, welfare and pensions, defence, public investment, and everything else to **squeeze / hold / grow**.
+2. Set income tax, VAT, business and wealth taxes to **cut / hold / raise**, then choose a borrowing allowance. The live ledger reconciles existing borrowing + spending changes − tax receipts + incremental interest. A positive funding gap blocks confirmation.
+
+Changes accumulate: hold adds no new change; another grow adds another recurring commitment. The borrowing allowance is chosen anew each Budget, at £20bn below, equal to, or £30bn above the same-shock baseline. It is a ceiling, not revenue. Unused headroom is not spent. Starting envelopes total £1,025bn of synthetic non-overlapping spending; capital is grouped entirely under investment. The baseline deficit is a separate training input, not calculated from a complete national accounts table.
+
+Welfare and business/wealth changes phase in. Investment brings maintenance or catch-up bills later. Capacity and household effects include service cuts; the fiscal and legacy scores exclude interest to prevent higher rates improving the score. Charts and debt include interest. See [the rewrite response](docs/ENVELOPE-REWRITE.md) for the independent review findings and remaining limitations.
+
+Version `envelopes-2026.09-v2` intentionally rejects earlier card-game saves and shared links. No old result is silently rescored. An incomplete Budget is a draft: only confirmed Budgets are saved.
 
 ## Run and deploy
 
@@ -33,13 +44,13 @@ No database or external model service is required by this application. Cloudflar
 - `public/app.js`, `public/style.css`: DOM interface and chart.
 - `src/index.ts`: Worker health and bounded simulation API.
 - `src/box.js`: decorative Three.js box; `npm run build` generates its optimized bundle and license notice.
-- `test/engine.test.js`: accounting invariants and all 32,768 policy combinations.
+- `test/engine.test.js`: accounting invariants, funding constraints, safeguard counterexamples and 3,000 seeded multi-year plans.
 
 ## Model limitations
 
-All macro paths, policy costs and outcome points are illustrative training assumptions. OBR, HMRC and Treasury links provide context, not these card costings. Household points are not disposable-income estimates. Capacity weights are not empirically calibrated. GDP has no policy feedback. Debt is simplified accumulated borrowing, not an official PSND/PSNFL reconciliation. No electoral or fiscal-rule prediction is made.
+All macro paths, policy costs and outcome points are illustrative training assumptions. OBR, HMRC and Treasury links provide context, not these envelope or tax costings. Household points are not disposable-income estimates. Capacity weights are not empirically calibrated. GDP has no policy feedback. Debt is simplified accumulated borrowing, not an official PSND/PSNFL reconciliation. No electoral or fiscal-rule prediction is made.
 
-The goal is £15bn annual borrowing improvement in year 5, £75bn cumulative improvement in years 6–10, and no capacity or household-group score below −5 across ten years. These are disclosed design thresholds, not proof of economic sustainability.
+The goal is £40bn underlying deficit improvement (before interest) in year 5, £200bn cumulative underlying improvement in years 6–10, and no capacity or household-group score below −5 across ten years. These are disclosed design thresholds, not proof of economic sustainability.
 
 Before describing the game as an evidence-calibrated policy model, replace training values with sourced estimates, validate distributional and service mappings, and commission independent review. Increment `SCENARIO.version` for outcome changes; old shared games must not silently change meaning. See the model-integration assessment supplied alongside the project for the recommended path.
 
@@ -52,14 +63,14 @@ Choices save locally. Result URLs contain validated choices in their fragment. N
 ## API
 
 - `GET /api/health`: health and scenario version.
-- `POST /api/simulate`: JSON such as `{ "decisions": [[],[],[],[],[]], "shock": "calm", "sensitivity": "central" }`.
-- 4KB streamed body limit, strict round/card validation, no external calls or storage. Unknown routes return 404 and unsupported simulation methods 405.
+- `POST /api/simulate`: JSON such as `{ "decisions": [], "shock": "calm", "sensitivity": "central" }` for the baseline. Each submitted Budget must contain exactly one ID for each of nine controls, e.g. `["health:0","welfare:0","defence:0","investment:0","other:0","income:0","vat:0","business:0","borrowing:0"]`. Sizes are −1, 0 or 1. The API can simulate unfunded drafts; `budgets[].gap` and `fundingPass` report feasibility. The browser blocks confirmation of an unfunded Budget.
+- 4KB streamed body limit, strict one-size-per-control validation, no external calls or storage. Unknown routes return 404 and unsupported simulation methods 405.
 
 The browser uses the same engine for instant feedback; the API supports verification and future integrations.
 
 ## Verification
 
-TypeScript, Worker dry run, accounting tests, full desktop/mobile playthrough, selection reversal, review cancellation, resume, sensitivity, shock reveal, downloads and shared results. API parity and invalid/oversized requests checked. Reduced-motion and keyboard paths checked. Screenshots reviewed for introduction, Budget and results.
+TypeScript, Worker dry run, accounting tests, full desktop/mobile playthrough, size reversal and blocked unfunded settlement, review cancellation, resume, sensitivity, shock reveal, downloads and shared results. API parity and invalid/oversized requests checked. Reduced-motion and keyboard paths checked. Screenshots reviewed for introduction, Budget and results.
 
 
 ## Independent review and browser reproduction

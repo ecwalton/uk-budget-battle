@@ -1,4 +1,12 @@
-import { SCENARIO, SHOCKS, ROUNDS, CARDS } from "./scenario.js";
+import {
+  SCENARIO,
+  SHOCKS,
+  ROUNDS,
+  CARDS,
+  CONTROLS,
+  BORROWING,
+  choiceLevel,
+} from "./scenario.js";
 export function validateGame(input) {
   if (
     !input ||
@@ -13,9 +21,12 @@ export function validateGame(input) {
   input.decisions.forEach((ids, i) => {
     if (
       !Array.isArray(ids) ||
-      ids.length > 3 ||
+      ids.length !== CONTROLS.length ||
       new Set(ids).size !== ids.length ||
-      ids.some((id) => !ROUNDS[i].cards.includes(id))
+      ids.some((id) => !ROUNDS[i].cards.includes(id)) ||
+      CONTROLS.some(
+        (c) => ids.filter((id) => id.startsWith(c.id + ":")).length !== 1,
+      )
     )
       throw new Error("Invalid policy choices");
   });
@@ -90,14 +101,29 @@ export function simulate(input) {
     legacy = years.slice(5),
     worstPressure = Math.min(...years.flatMap((y) => y.pressure)),
     worstService = Math.min(...years.map((y) => y.service));
-  const fiscalPass = -last.delta >= SCENARIO.target,
-    servicePass = worstService >= SCENARIO.serviceFloor,
-    incomePass = worstPressure >= SCENARIO.pressureFloor;
-  const legacyImprovement = -legacy.reduce((s, y) => s + y.delta, 0),
+  const fiscalPass = -last.primary >= SCENARIO.target,
+    servicePass = worstService >= SCENARIO.serviceFloor - 1e-8,
+    incomePass = worstPressure >= SCENARIO.pressureFloor - 1e-8;
+  const legacyImprovement = -legacy.reduce((s, y) => s + y.primary, 0),
     legacyPass = legacyImprovement >= SCENARIO.target * 5;
+  const budgets = game.decisions.map((ids, i) => {
+    const allowance = BORROWING.find(
+      (b) => b.level === choiceLevel(ids, "borrowing"),
+    ).cap;
+    const ceiling = Math.max(0, years[i].baseline + allowance);
+    return {
+      ceiling,
+      allowance,
+      gap: Math.max(0, years[i].borrowing - ceiling),
+      headroom: ceiling - years[i].borrowing,
+    };
+  });
+  const fundingPass = budgets.every((b) => b.gap < 1e-8);
   return {
     years,
-    annualImprovement: -last.delta,
+    budgets,
+    fundingPass,
+    annualImprovement: -last.primary || 0,
     totalImprovement: -years.slice(0, 5).reduce((s, y) => s + y.delta, 0),
     legacyImprovement,
     legacyPass,
@@ -106,6 +132,7 @@ export function simulate(input) {
     fiscalPass,
     servicePass,
     incomePass,
-    passed: fiscalPass && servicePass && incomePass && legacyPass,
+    passed:
+      fundingPass && fiscalPass && servicePass && incomePass && legacyPass,
   };
 }

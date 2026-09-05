@@ -16,6 +16,9 @@ try {
   await page.goto(base);
   await page.waitForSelector(".box-canvas");
   await page.waitForTimeout(400);
+  await page.setViewportSize({ width: 1400, height: 1000 });
+  await page.setViewportSize({ width: 1440, height: 1080 });
+  assert.equal(await page.locator(".box-canvas").count(), 1);
   await page.screenshot({
     path: "artifacts/browser/intro-desktop.png",
     fullPage: true,
@@ -25,18 +28,30 @@ try {
   await page.keyboard.press("Escape");
   await page.click('[data-shock="energy"]');
   await page.click("#start-btn");
-  await page.click('[data-card="health"]');
-  assert.deepEqual(
-    JSON.parse(await page.evaluate(() => render_game_to_text())).pending,
-    ["health"],
+  const set = async (p, id, value) =>
+    p.click(`[data-control="${id}"][data-level="${value}"]`);
+  for (const id of ["health", "welfare", "defence", "investment", "other"])
+    await set(page, id, 1);
+  await page.screenshot({
+    path: "artifacts/browser/spending-desktop.png",
+    fullPage: true,
+  });
+  await page.click('[data-action="funding"]');
+  await set(page, "borrowing", 1);
+  assert.ok(await page.locator('[data-action="review"]').isDisabled());
+  assert.ok(
+    (await page.locator(".funding-bridge").innerText()).includes(
+      "£29.0bn still to fund",
+    ),
   );
-  await page.click('[data-card="health"]');
-  assert.deepEqual(
-    JSON.parse(await page.evaluate(() => render_game_to_text())).pending,
-    [],
-  );
-  await page.click('[data-card="income"]');
-  await page.click('[data-card="procurement"]');
+  await page.screenshot({
+    path: "artifacts/browser/funding-desktop.png",
+    fullPage: true,
+  });
+  await page.click('[data-action="spending"]');
+  await page.click('[data-action="clear"]');
+  await page.click('[data-action="funding"]');
+  await set(page, "income", 1);
   await page.click('[data-action="review"]');
   await page.click('[data-action="close"]');
   assert.equal(
@@ -44,10 +59,6 @@ try {
       .length,
     0,
   );
-  await page.screenshot({
-    path: "artifacts/browser/budget-desktop.png",
-    fullPage: true,
-  });
   await page.click('[data-action="review"]');
   await page.click('[data-action="commit"]');
   await page.reload();
@@ -57,15 +68,10 @@ try {
     2,
   );
   await page.selectOption("#sensitivity", "cautious");
-  for (const ids of [
-    ["thresholds"],
-    ["compliance"],
-    ["land"],
-    ["reliefs", "defer"],
-  ]) {
-    for (const id of ids) await page.click(`[data-card="${id}"]`);
-    if (ids.includes("compliance"))
-      assert.ok(await page.locator(".shock-banner").isVisible());
+  for (let round = 2; round <= 5; round++) {
+    if (round === 3) assert.ok(await page.locator(".shock-banner").isVisible());
+    await page.click('[data-action="funding"]');
+    if (round <= 3) await set(page, "income", 1);
     await page.click('[data-action="review"]');
     await page.click('[data-action="commit"]');
   }
@@ -148,9 +154,20 @@ try {
     fullPage: true,
   });
   await shared.click("#start-btn");
-  await shared.click('[data-card="health"]');
+  await set(shared, "health", 1);
   await shared.screenshot({
     path: "artifacts/browser/budget-mobile.png",
+    fullPage: true,
+  });
+  assert.equal(
+    await shared.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await shared.click('[data-action="funding"]');
+  await shared.screenshot({
+    path: "artifacts/browser/funding-mobile.png",
     fullPage: true,
   });
   assert.equal(
@@ -165,6 +182,7 @@ try {
   assert.equal(await reduced.locator(".box-canvas").count(), 0);
   await reduced.click("#start-btn");
   // Keyboard: native buttons and review dialog must remain usable.
+  await reduced.click('[data-action="funding"]');
   await reduced.locator('[data-action="review"]').focus();
   await reduced.keyboard.press("Enter");
   assert.ok(await reduced.locator("dialog").isVisible());
@@ -177,7 +195,9 @@ try {
         checks: [
           "3D introduction",
           "methodology modal",
-          "toggle and undo",
+          "size controls and reset",
+          "unfunded settlement blocked",
+          "intro resize",
           "confirm and resume",
           "all five rounds",
           "shock reveal",

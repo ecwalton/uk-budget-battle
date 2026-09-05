@@ -1,0 +1,20 @@
+{
+  "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
+  "worker": "uk-budget-battle",
+  "deploymentVersion": "29d994ce-6ce8-49cc-835f-3c04e19012d9",
+  "scenarioVersion": "training-2026.09-v1",
+  "recorded": "2026-09-05",
+  "scope": "Source and public artifacts corresponding to the existing deployment; repository/test documentation added afterwards.",
+  "sha256": {
+    "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+    "public/index.html": "9f5c6b985f11f41630f18067a6eae54589f053e24039dbb32029a7b2f19576f0",
+    "public/box.bundle.js": "9a9e58760f360a21b8d2e29d07a6ad140587fa6f38305d45a205551d8fea9e01",
+    "public/social-card.png": "c945b951232e23fe439b29217f929ed51f35c9a22c632135ea1f8bffa995d590",
+    "public/_headers": "9e688e5e1ecce06444e8e4256ade6c403de213995b5bf8e57953e832d4239c6d",
+    "public/style.css": "cfcb3f58a58067a75f04d3a43597556a673a50c6ea2fa450a6a337ecd465df04",
+    "public/engine.js": "ad34c90c0e0122db5c9e3740260f437ae281b2fa04fc6537b484bb3dc426203c",
+    "public/app.js": "258585d1568507677fde75157da9b233b185eb1cb910793e2c2d9eb65b5d9e38",
+    "public/scenario.js": "9246cbe5251d7f9a953dd490dbbe4a4cc3aa2aa0ea75a7c408d89d75e694e3a7",
+    "src/index.ts": "67f4148137b240e6ce1c5b4d741eb407bece1f16fcceb3fff5fbfd49c32d0924"
+  }
+}
