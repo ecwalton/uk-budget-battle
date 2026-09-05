@@ -6,7 +6,7 @@ Independently review the Budget Battle implementation, its economic claims and p
 
 Repository: https://github.com/ecwalton/uk-budget-battle (private)  
 Live site: https://uk-budget-battle.openuk-co.workers.dev  
-Scenario: `envelopes-2026.09-v2`  
+Scenario: `envelopes-2026.09-v3`  
 Known deployment: see `docs/DEPLOYMENT-SNAPSHOT.json`  
 Handoff date: 5 September 2026
 
@@ -26,7 +26,7 @@ The user provided OBR, PolicyEngine, OG-UK and HANK references. They were assess
 2. `public/scenario.js` and `public/engine.js` for the actual assumptions and calculations.
 3. `public/app.js`, `public/style.css`, `src/box.js` and `src/index.ts` for the user flow and Worker.
 4. `MODEL-INTEGRATION.md` for the external economic-model assessment.
-5. `docs/ENVELOPE-REWRITE.md` and `docs/INDEPENDENT-CROSS-CHECK-V1.md` for the latest review and response.
+5. `docs/CROSS-CHECK-V2-RESPONSE.md` and `docs/INDEPENDENT-CROSS-CHECK-V2.md` for the latest review and response; `docs/ENVELOPE-REWRITE.md` records the previous version.
 6. `docs/CONCEPT-BRIEF.md`, `docs/EXTERNAL-REVIEW.md` and `docs/REVIEW-RESPONSE.md` for intent and previous objections. The external review contains unverified claims and recommendations that were deliberately not all accepted.
 
 Implementation decisions that differ from the brief include UK funding envelopes rather than a partially verified NHS England/Barnett costing, household points rather than real disposable-income estimates, and a disclosed legacy fiscal threshold. Evaluate whether these differences are explained clearly enough.
@@ -70,7 +70,7 @@ This opens the public site, completes one winning route, exercises clipboard sha
 
 ## Existing evidence and its limits
 
-The current build has 18 Node tests, including funding ceilings, spending persistence/reversal, welfare and tax ramps, investment bills, binding capacity and household floors, tax-funded and tax-free feasible routes, interest-neutral fiscal scoring, and a concrete funded year-five pass that fails legacy. Presentation tests check that bulletins distinguish new choices from earlier commitments, use cautious receipts correctly and retain model disclosures in the newspaper export. A seeded sample of 3,000 multi-year plans spans all three shocks and both sensitivities. This is not exhaustive over the new choice space, and it does not validate economic calibration.
+The current build has 24 Node tests, including funding ceilings, spending persistence/reversal, welfare and tax ramps, investment bills, binding capacity and household floors, tax-funded and tax-free feasible routes, interest-neutral fiscal scoring, and a concrete funded year-five pass that fails legacy. Presentation tests check that bulletins distinguish new choices from earlier commitments, use cautious receipts correctly and retain model disclosures in the newspaper export. A seeded sample of 3,000 multi-year plans spans all three shocks and both sensitivities. This is not exhaustive over the new choice space, and it does not validate economic calibration.
 
 Browser checks covered desktop/mobile views, size changes and reset, blocked unfunded confirmation, introduction resize, review cancellation, confirmation, resume, sensitivity, the energy shock, results, JSON download, shared-link restoration, API parity, malformed/oversized requests and reduced-motion/keyboard paths. Additional browser checks cover the Blender lid animation through completion, the mobile bulletin, the PNG newspaper download and the five loaded miniature illustrations. A separate live check exercises a winning route, bulletin continuation, PNG download and actual clipboard sharing. No full accessibility audit, independent macroeconomic validation or educational user study has been completed. Re-run the checks rather than treating these past results as current evidence.
 
@@ -79,9 +79,9 @@ Browser checks covered desktop/mobile views, size changes and reset, blocked unf
 ### Accounting and economic honesty
 
 - An unchanged package must have zero incremental fiscal improvement against the same-shock baseline.
-- Recurring changes persist, one-off investment catch-up costs occur once per cut, and final-year changes affect the legacy. Check investment maintenance and catch-up profiles, and welfare and business-tax ramps individually. Old land-sale and reform cards are no longer offered.
+- Recurring changes persist, one-off investment catch-up costs occur once per outstanding cut; reversals cancel the newest outstanding step and its future bills, and final-year changes affect the legacy. Check investment maintenance and catch-up profiles, and welfare and business-tax ramps individually. Old land-sale and reform cards are no longer offered.
 - Interest is computed on last year's incremental debt. Check timing, signs and possible overlap with baseline shocks. Do not confuse this simplified debt series with an official PSND or PSNFL model.
-- Winning requires every Budget to fit its borrowing ceiling, £40bn underlying improvement before interest in year 5, £200bn cumulative underlying improvement in years 6–10, and capacity and every income-group score at or above −5 throughout ten years. Are these thresholds clear, internally consistent and gameable?
+- Winning requires every Budget to fit its borrowing ceiling, £40bn underlying improvement before interest in year 5, £100bn cumulative primary savings during years 1–5, £200bn cumulative underlying improvement in years 6–10, and capacity at or above −5 and household scores at or above −4 for the lowest two groups (−5 for others) throughout ten years. Are these thresholds clear, internally consistent and gameable?
 - All costs, macro paths and household/capacity points are illustrative. Check every screen, chart, share result and downloaded record for wording that could imply official calibration.
 - Do the outcome weights privilege particular strategies? Identify the mechanism without prescribing preferred policy winners.
 - Check whether household impacts within quintiles, pensioner heterogeneity, service quality and effects beyond year 10 are explained as omissions rather than implicitly counted as zero in claims about real policy.

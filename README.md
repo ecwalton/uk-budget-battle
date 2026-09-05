@@ -13,7 +13,7 @@ Changes accumulate: hold adds no new change; another grow adds another recurring
 
 Welfare and business/wealth changes phase in. Investment brings maintenance or catch-up bills later. Capacity and household effects include service cuts; the fiscal and legacy scores exclude interest to prevent higher rates improving the score. Charts and debt include interest. See [the rewrite response](docs/ENVELOPE-REWRITE.md) for the independent review findings and remaining limitations.
 
-Version `envelopes-2026.09-v2` intentionally rejects earlier card-game saves and shared links. No old result is silently rescored. An incomplete Budget is a draft: only confirmed Budgets are saved.
+Version `envelopes-2026.09-v3` intentionally rejects earlier saves and shared links. No old result is silently rescored. An incomplete Budget is a draft: only confirmed Budgets are saved.
 
 ## Run and deploy
 
@@ -50,7 +50,7 @@ No database or external model service is required by this application. Cloudflar
 
 All macro paths, policy costs and outcome points are illustrative training assumptions. OBR, HMRC and Treasury links provide context, not these envelope or tax costings. Household points are not disposable-income estimates. Capacity weights are not empirically calibrated. GDP has no policy feedback. Debt is simplified accumulated borrowing, not an official PSND/PSNFL reconciliation. No electoral or fiscal-rule prediction is made.
 
-The goal is £40bn underlying deficit improvement (before interest) in year 5, £200bn cumulative underlying improvement in years 6–10, and no capacity or household-group score below −5 across ten years. These are disclosed design thresholds, not proof of economic sustainability.
+The goal is £40bn underlying deficit improvement (before interest) in year 5, £100bn cumulative primary savings during years 1–5, £200bn cumulative underlying improvement in years 6–10, and no capacity score below −5 or household score below −4 for the lowest two groups (−5 for others) across ten years. These are disclosed design thresholds, not proof of economic sustainability.
 
 Before describing the game as an evidence-calibrated policy model, replace training values with sourced estimates, validate distributional and service mappings, and commission independent review. Increment `SCENARIO.version` for outcome changes; old shared games must not silently change meaning. See the model-integration assessment supplied alongside the project for the recommended path.
 
@@ -60,7 +60,7 @@ An original Blender red box opens after each confirmed Budget. A short newspaper
 
 Original Blender source, rendering scripts and the silent 12-second launch trailer are documented in [assets/README.md](assets/README.md). Assets are served locally; the trailer is an optional separate file and never autoplays. Reduced-motion/data-saving users retain the static red box and can continue immediately. The model's short animation can also be skipped immediately. Only confirmed choices are saved, so reloading a bulletin resumes at the next Budget or the final results.
 
-These presentation changes retain `envelopes-2026.09-v2`: numerical rules and existing result links are unchanged.
+The artwork originated in v2. The subsequent v3 cross-check changes numerical rules and invalidates old result links; see [the response](docs/CROSS-CHECK-V2-RESPONSE.md).
 
 ## Public website design
 

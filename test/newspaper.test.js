@@ -36,3 +36,13 @@ test("front page retains scenario, assumptions, all five records and exact model
   assert.match(svg, /1720/);
   assert.equal((svg.match(/Borrowing allowance/g) || []).length, 5);
 });
+test("bulletin includes avoided investment catch-up in restoration year", () => {
+  const g = game([
+    choices({ investment: -1 }),
+    choices(),
+    choices(),
+    choices({ investment: 1 }),
+  ]);
+  assert.equal(budgetStory(g, 3).cost, 9);
+  assert.match(newspaperSVG(g), /£100bn target/);
+});

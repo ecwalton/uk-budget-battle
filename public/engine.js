@@ -52,16 +52,37 @@ export function simulate(input) {
   let debt = SCENARIO.startingDebt,
     baseDebt = debt,
     incrementalDebt = 0;
-  const years = [];
+  const years = [],
+    investmentSteps = [];
   for (let y = 0; y < 10; y++) {
     let primary = 0,
       service = 0,
       pressure = [0, 0, 0, 0, 0];
+    const policyCosts = Object.fromEntries(CONTROLS.map((c) => [c.id, 0]));
+    const step = choiceLevel(game.decisions[y] ?? [], "investment");
+    // Reverse the newest outstanding step first; past bills are never refunded.
+    if (step) {
+      if (investmentSteps.at(-1)?.level === -step) investmentSteps.pop();
+      else investmentSteps.push({ level: step, start: y });
+    }
+    const investment = {
+      level: investmentSteps.reduce((s, c) => s + c.level, 0),
+      maintenance:
+        investmentSteps.filter((c) => c.level > 0 && y - c.start >= 3).length *
+        3,
+      catchUp:
+        investmentSteps.filter((c) => c.level < 0 && y - c.start === 3).length *
+        6,
+    };
+    investment.capital = investment.level * 15;
+    investment.cost =
+      investment.capital + investment.maintenance + investment.catchUp;
     game.decisions.forEach((ids, start) =>
       ids.forEach((id) => {
         const c = CARDS.find((c) => c.id === id),
           age = y - start;
-        primary += policyCost(c, age, game.sensitivity);
+        if (c.group !== "investment")
+          policyCosts[c.group] += policyCost(c, age, game.sensitivity);
         if (
           age >= c.lag &&
           (c.serviceDuration === undefined || age < c.lag + c.serviceDuration)
@@ -71,6 +92,8 @@ export function simulate(input) {
         }
       }),
     );
+    policyCosts.investment = investment.cost;
+    primary = Object.values(policyCosts).reduce((s, v) => s + v, 0);
     if (y >= 2 && y <= 4) pressure = pressure.map((v) => v + shock.pressure);
     const rate = SCENARIO.marginalInterest + (y >= 2 ? shock.rate : 0);
     const interest = incrementalDebt * rate;
@@ -86,6 +109,8 @@ export function simulate(input) {
       baseline,
       borrowing,
       primary,
+      policyCosts,
+      investment,
       interest,
       delta,
       debt,
@@ -103,7 +128,11 @@ export function simulate(input) {
     worstService = Math.min(...years.map((y) => y.service));
   const fiscalPass = -last.primary >= SCENARIO.target,
     servicePass = worstService >= SCENARIO.serviceFloor - 1e-8,
-    incomePass = worstPressure >= SCENARIO.pressureFloor - 1e-8;
+    incomePass = SCENARIO.pressureFloors.every((floor, i) =>
+      years.every((y) => y.pressure[i] >= floor - 1e-8),
+    );
+  const termImprovement = -years.slice(0, 5).reduce((s, y) => s + y.primary, 0),
+    termPass = termImprovement >= SCENARIO.termTarget;
   const legacyImprovement = -legacy.reduce((s, y) => s + y.primary, 0),
     legacyPass = legacyImprovement >= SCENARIO.target * 5;
   const budgets = game.decisions.map((ids, i) => {
@@ -125,6 +154,8 @@ export function simulate(input) {
     fundingPass,
     annualImprovement: -last.primary || 0,
     totalImprovement: -years.slice(0, 5).reduce((s, y) => s + y.delta, 0),
+    termImprovement,
+    termPass,
     legacyImprovement,
     legacyPass,
     worstPressure,
@@ -133,6 +164,11 @@ export function simulate(input) {
     servicePass,
     incomePass,
     passed:
-      fundingPass && fiscalPass && servicePass && incomePass && legacyPass,
+      fundingPass &&
+      fiscalPass &&
+      termPass &&
+      servicePass &&
+      incomePass &&
+      legacyPass,
   };
 }

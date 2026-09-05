@@ -1,3 +1,5 @@
+> Historical v2 design. Investment reversals, scoring and safeguards were updated in v3; see [the v3 response](CROSS-CHECK-V2-RESPONSE.md).
+
 # Spending-envelope rewrite
 
 The original selectable cards could all be taken together and never formed a constrained settlement. Version `envelopes-2026.09-v2` replaces them with two screens in every Budget: five sized spending envelopes, then three sized tax packages and a borrowing allowance. A live ledger shows the whole funding relationship on both screens; an unfunded Budget cannot be confirmed. On mobile the borrowing total and remaining gap stay visible while scrolling.

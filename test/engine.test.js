@@ -169,7 +169,7 @@ test("higher rates do not improve fiscal or legacy scores", () => {
 });
 test("energy shock tightens household safeguard even with matched borrowing comparator", () => {
   const decisions = Array.from({ length: 5 }, (_, i) =>
-    choices({ welfare: i < 4 ? -1 : 0, health: i === 0 ? -1 : 0 }),
+    choices({ welfare: i < 3 ? -1 : 0, health: i === 0 ? -1 : 0 }),
   );
   const calm = simulate(game(decisions)),
     energy = simulate(game(decisions, "energy"));
@@ -178,19 +178,20 @@ test("energy shock tightens household safeguard even with matched borrowing comp
   assert.equal(energy.years[2].baseline - calm.years[2].baseline, 12);
 });
 test("a funded year-five pass can still fail legacy on later commitments", () => {
-  const rows = [
-    [0, -1, -1, 1, -1, 0, 0, 0, 1],
-    [-1, -1, 1, 1, -1, 1, -1, -1, -1],
-    [1, 1, 0, -1, 1, 0, 1, -1, 1],
-    [-1, 1, -1, -1, 1, 1, -1, 1, -1],
-    [-1, 1, -1, 0, 1, 1, 0, 0, 1],
-  ];
   const r = simulate(
-    game(rows.map((row) => CONTROLS.map((c, i) => `${c.id}:${row[i]}`))),
+    game([
+      choices({ welfare: -1 }),
+      choices({ defence: -1 }),
+      choices({ other: -1 }),
+      choices(),
+      choices({ investment: -1, income: -1 }),
+    ]),
   );
   assert.ok(r.fundingPass && r.fiscalPass && r.servicePass && r.incomePass);
   assert.equal(r.annualImprovement, 40);
-  assert.equal(r.legacyImprovement, 148);
+  assert.equal(r.termImprovement, 156);
+  assert.ok(r.termPass);
+  assert.equal(r.legacyImprovement, 194);
   assert.equal(r.legacyPass, false);
   assert.equal(r.passed, false);
 });
@@ -217,5 +218,110 @@ test("seeded multi-year plans reconcile debt across all shocks and sensitivities
         Math.abs(y.borrowing - y.baseline - y.primary - y.interest) < 1e-8,
       );
     }
+  }
+});
+
+test("late action cannot substitute for term-wide savings", () => {
+  const early = simulate(
+    game([
+      choices({ welfare: -1, income: 1, vat: 1 }),
+      choices(),
+      choices(),
+      choices(),
+      choices(),
+    ]),
+  );
+  const late = simulate(
+    game([
+      choices(),
+      choices(),
+      choices(),
+      choices({ welfare: -1 }),
+      choices({ income: 1, vat: 1 }),
+    ]),
+  );
+  assert.equal(early.annualImprovement, 46);
+  assert.equal(late.annualImprovement, 46);
+  assert.equal(early.termImprovement, 222);
+  assert.equal(late.termImprovement, 54);
+  assert.ok(early.passed);
+  assert.ok(
+    late.fundingPass &&
+      late.fiscalPass &&
+      late.legacyPass &&
+      late.incomePass &&
+      late.servicePass,
+  );
+  assert.equal(late.termPass, false);
+  assert.equal(late.passed, false);
+});
+test("five welfare squeezes breach the lower-income safeguard", () => {
+  const r = simulate(
+    game(Array.from({ length: 5 }, () => choices({ welfare: -1 }))),
+  );
+  assert.equal(r.worstPressure, -5);
+  assert.equal(r.incomePass, false);
+});
+test("investment restoration cancels future bills in both directions", () => {
+  for (const sign of [-1, 1]) {
+    const r = simulate(
+      game([
+        choices({ investment: sign, borrowing: 1 }),
+        choices({ investment: -sign, borrowing: 1 }),
+      ]),
+    );
+    assert.equal(r.years[0].primary, 15 * sign);
+    assert.ok(r.years.slice(1).every((y) => y.primary === 0));
+    assert.notEqual(r.years[1].interest, 0); // Actual past borrowing remains.
+  }
+});
+test("investment partial reversals cancel newest steps and never refund past bills", () => {
+  const r = simulate(
+    game([
+      choices({ investment: 1 }),
+      choices({ investment: 1 }),
+      choices(),
+      choices({ investment: -1 }),
+      choices({ investment: -1 }),
+    ]),
+  );
+  assert.deepEqual(
+    r.years.map((y) => y.primary),
+    [15, 30, 30, 18, 0, 0, 0, 0, 0, 0],
+  );
+  const cut = simulate(
+    game([
+      choices({ investment: -1 }),
+      choices(),
+      choices(),
+      choices(),
+      choices({ investment: 1 }),
+    ]),
+  );
+  assert.equal(cut.years[3].investment.catchUp, 6);
+  assert.equal(cut.years[4].primary, 0);
+});
+test("all 243 investment paths preserve net capital and reconciled group costs", () => {
+  for (let path = 0; path < 243; path++) {
+    let code = path,
+      level = 0;
+    const steps = Array.from({ length: 5 }, () => {
+      const v = (code % 3) - 1;
+      code = Math.floor(code / 3);
+      return v;
+    });
+    const r = simulate(
+      game(steps.map((investment) => choices({ investment }))),
+    );
+    r.years.forEach((y, i) => {
+      level += steps[i] ?? 0;
+      assert.equal(y.investment.capital, 15 * level);
+      assert.equal(
+        y.primary,
+        Object.values(y.policyCosts).reduce((a, b) => a + b, 0),
+      );
+      if (level === 0) assert.equal(y.primary, 0);
+      assert.ok(y.investment.maintenance >= 0 && y.investment.catchUp >= 0);
+    });
   }
 });

@@ -1,6 +1,6 @@
 // Training assumptions, deliberately independent of any claimed official costing.
 export const SCENARIO = {
-  version: "envelopes-2026.09-v2",
+  version: "envelopes-2026.09-v3",
   title: "The first five Budgets",
   baseline: [130, 118, 105, 93, 80, 76, 72, 68, 64, 60],
   startingDebt: 2850,
@@ -9,7 +9,8 @@ export const SCENARIO = {
   marginalInterest: 0.03, // Applied to last year's incremental debt, not the full stock.
   target: 40,
   serviceFloor: -5,
-  pressureFloor: -5,
+  termTarget: 100,
+  pressureFloors: [-4, -4, -5, -5, -5],
   disclaimer:
     "Training scenario. All policy costs, baseline paths and outcome points are illustrative, not OBR forecasts or official policy costings.",
   sources: [
@@ -94,7 +95,7 @@ export const ENVELOPES = [
     service: 1.2,
     lag: 2,
     pressure: [0.4, 0.3, 0.2, 0.1, 0.1],
-    note: "Capital across all services, housing and infrastructure. Growth adds £3bn maintenance from year four; a squeeze brings a £6bn catch-up bill in year four.",
+    note: "Capital across all services, housing and infrastructure. Growth adds £3bn maintenance from year four; a squeeze brings a £6bn catch-up bill in year four. Reversing a step cancels its future bills.",
   },
   {
     id: "other",
@@ -155,8 +156,6 @@ export const CARDS = CONTROLS.flatMap((c) =>
         c.id === "welfare"
           ? [(level * c.step) / 2, level * c.step]
           : [level * c.step];
-    if (c.id === "investment" && level === 1) cost = [15, 15, 15, 18];
-    if (c.id === "investment" && level === -1) cost = [-15, -15, -15, -9, -15];
     if (tax)
       cost =
         c.id === "business"
