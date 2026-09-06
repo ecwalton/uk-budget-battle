@@ -2,11 +2,11 @@
 
 Live: https://uk-budget-battle.openuk-co.workers.dev
 
-The main site is now a short guided reform argument, replacing the increasingly complex calculator experience.
+The main site puts the player in the Chancellor's chair: “The red box is yours.” Five decisions cover spending, taxes, business rules, energy and migration. There is no smaller-state slogan on the opening screen.
 
-Five connected steps: smaller state → lower taxes → fewer regulatory barriers → ending net-zero mandates in favour of energy affordability → lower or negative net migration, with prosperity per person as the objective. Each screen contains a proposal, a three-part mechanism, a connection to the next screen and expandable assumptions. The final page brings the package together.
+The first four steps offer two unselected policy options. Consequences appear after a choice, and confirmation is required to continue. Migration uses the existing reference/zero/negative flow presets, now requiring an explicit selection. The final Chancellor's statement is derived from the decisions: a coherent smaller-state route, a mixed spending settlement, protection of the existing programme, or a tax pledge without identified spending savings. The conclusion is a description of the player's programme, not a numerical score.
 
-This is explicitly advocacy, not a neutral policy comparison or a calibrated economic forecast. Arrows indicate intended mechanisms, not guaranteed causal effects. No scores, numerical growth estimates or fiscal controls appear in the main journey. The migration step has four people-flow scenarios, including net outflow of 250,000 per year, with an explicit assumed unauthorised-population balance. These are stress tests, not forecasts; see `docs/WALKTHROUGH-MIGRATION.md`. Sources and counterevidence sit alongside the relevant claims.
+This is a simplified authored policy scenario, not a calibrated economic forecast. Arrows show intended mechanisms with conditions available alongside them. Migration category splits and the unauthorised-population balance remain explicit stress-test assumptions; see `docs/WALKTHROUGH-MIGRATION.md`. The colourful illustrations and compact five-step structure are retained.
 
 ## Development
 

@@ -22,12 +22,20 @@ try {
     assert.equal(
       JSON.parse(await page.evaluate(() => window.render_game_to_text()))
         .migration.net,
-      -100000,
+      171000,
     );
     await page.screenshot({
       path: `artifacts/walkthrough/intro-${width}.png`,
       fullPage: true,
     });
+    assert.match(
+      await page.locator("main").innerText(),
+      /APPOINTED CHANCELLOR/,
+    );
+    assert.doesNotMatch(
+      await page.locator("main").innerText(),
+      /smaller state|Less state/i,
+    );
     await page.click("#start-btn");
     for (let i = 1; i <= 5; i++) {
       assert.equal(
@@ -35,7 +43,11 @@ try {
           .step,
         i,
       );
-      assert.equal(await page.locator(".chain li").count(), 3);
+      assert.ok(await page.locator('[data-action="next"]').isDisabled());
+      if (i < 5) {
+        await page.click('[data-policy="0"]');
+        assert.equal(await page.locator(".chain li").count(), 3);
+      }
       await page.locator(".evidence summary").click();
       assert.ok(
         (await page.locator(".evidence").getAttribute("open")) !== null,
@@ -81,6 +93,7 @@ try {
       await page.click('[data-action="next"]');
     }
     assert.equal(await page.locator(".summary-list>div").count(), 5);
+    assert.match(await page.locator("h1").innerText(), /smaller state/);
     await page.screenshot({
       path: `artifacts/walkthrough/conclusion-${width}.png`,
       fullPage: true,
@@ -104,6 +117,26 @@ try {
       JSON.parse(await page.evaluate(() => window.render_game_to_text())).step,
       1,
     );
+    for (let i = 1; i <= 4; i++) {
+      await page.click('[data-policy="1"]');
+      await page.click('[data-action="next"]');
+    }
+    await page.click('[data-migration="reference"]');
+    await page.click('[data-action="next"]');
+    assert.match(
+      await page.locator("h1").innerText(),
+      /protected the spending/,
+    );
+    assert.doesNotMatch(await page.locator("h1").innerText(), /smaller state/);
+    await page.click('[data-action="restart"]');
+    await page.click("#start-btn");
+    for (const value of [1, 0, 0, 0]) {
+      await page.click(`[data-policy="${value}"]`);
+      await page.click('[data-action="next"]');
+    }
+    await page.click('[data-migration="negative"]');
+    await page.click('[data-action="next"]');
+    assert.match(await page.locator("h1").innerText(), /funding plan/);
     assert.deepEqual(errors, []);
     await page.close();
   }

@@ -1,10 +1,10 @@
 {
   "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
   "worker": "uk-budget-battle",
-  "deploymentVersion": "aec9c821-c1ed-40e4-b186-1cc3d7ef4c73",
+  "deploymentVersion": "7760ce03-fd0f-42ac-8808-48a734a2994c",
   "scenarioVersion": "envelopes-2026.09-v4",
   "recorded": "2026-09-06",
-  "scope": "Chancellor framing restored. Four unselected binary policy decisions plus explicit migration choice; final statement follows choices rather than announcing smaller state at the start.",
+  "scope": "Main experience replaced by colourful five-step reform advocacy walkthrough and explicit migration flow stress tests. Earlier v4 calculator retained at /explorer.html.",
   "sha256": {
     "public/_headers": "443165116fc4604591e1156ecaf66bff607288a6f3503d2edd59e053a65f6fc9",
     "public/app.js": "341152b8a7ab80ea9d709cc439171e354554b4d8ccf6f9cce65058a2dfaf988d",
@@ -18,18 +18,18 @@
     "public/box.bundle.js": "381f31035913ac1462e1f88133c69beb2742ac1a5fb1628a71a09332d5346375",
     "public/engine.js": "b53ca6be37590b9e6230b0b4461210484c01ed1d175459c02a9acb48bd3a9539",
     "public/explorer.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
-    "public/index.html": "1e3e467799fcf03d4ad409e40da8b861b1a2623cb824af90de835c0e9640006e",
+    "public/index.html": "21d3dff7dce0666ea3e74de2c7610b35b179730176f535929eb3ee2eabf3cfe0",
     "public/migration-path.js": "d4a6003fa53e56be206e854dbda1b91e7b6dfcbb7cdcb8b2e08017b7f501a351",
     "public/migration.js": "10440b5a59b7043353bf19f8a76069e65ed5f68dbfe70ef02c8ed50bbe711185",
     "public/newspaper.js": "62cc62b2c677f8b30fac550a4b67b2f0343925b6ad3f61041d6045b648674e0e",
-    "public/reform-art.js": "581a2011ff161ab156c65d1049e034e77d81779c968db58723e69903a525b2d4",
+    "public/reform-art.js": "3bf1187ff00ef4d36e1aeff66f8072e57879f7be2cd5a39bbbbe6bf53b0bf103",
     "public/scenario.js": "309b00f6f8c2e98e51a8e1bd0176e1dbe727953402d8edceaef343ada65f2ed5",
-    "public/social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63",
+    "public/social-card.png": "9e66ad2e322cdb4a39fe1b8d301d6a478607753e5f5d4a4a02ec6454b94f653b",
     "public/style.css": "6143b8dd5b92fca10cafb7b25ea374fca9e05a658707e66386aad90f41449bb4",
     "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
-    "public/walkthrough.css": "7d2e5d06a15e3823a18004d07d20d69dfce0538bb906e887791ebca6df2a5646",
-    "public/walkthrough.js": "d41ad1239a0279244a5e585f62cc4447df8a39abedf67566803bf58dc011e6fe",
-    "src/index.ts": "c4ddbe1efc80c8f98b5fe6fab0cde5e8f64c9cfb84256edf859a7692a2959746"
+    "public/walkthrough.css": "538c7f6acf3f58ca8adf1dd7391a927ee5f604a0d82664abd010d15308340e0b",
+    "public/walkthrough.js": "ba0d9bc7c837071157358b3c539f559f2b56929da622abac40b8196bf70166db",
+    "src/index.ts": "1c7a9c7b5c5e277f86a549f9d82c801c87360735e3341a8703717079b5489c5e"
   },
-  "experienceVersion": "chancellor-walkthrough-v2"
+  "experienceVersion": "reform-walkthrough-v1"
 }

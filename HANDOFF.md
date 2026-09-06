@@ -1,15 +1,13 @@
-# Walkthrough review handoff
+# Chancellor walkthrough review handoff
 
-The user's latest request supersedes the calculator direction: a simpler walkthrough advocating a smaller state/lower taxes, fewer regulatory barriers, no net-zero mandates and lower or negative net migration, with growth and prosperity per person as the objective.
+Latest user correction: restore “be the Chancellor”; the smaller-state message should emerge from choices, not be the opening premise.
 
-Review the live main site https://uk-budget-battle.openuk-co.workers.dev and `public/walkthrough.js`, `public/walkthrough.css`, `public/index.html`. It is a five-step advocacy narrative with a summary. There are no economic forecasts or player scores. The migration screen includes a people-flow stress test: reference, zero, −100,000 and −250,000 net per year. Its constructed category splits and assumed unauthorised-population balance must not be mistaken for measured inputs; see `docs/WALKTHROUGH-MIGRATION.md`. The earlier calculator remains at `/explorer.html`, outside the main flow.
+Main site: https://uk-budget-battle.openuk-co.workers.dev . Inspect `public/walkthrough.js`, `public/reform-art.js` and `public/walkthrough.css`.
 
-Check that each transition explains the proposed connection without presenting assumptions as established causation. In particular: spending savings precede tax cuts; deregulation targets unnecessary barriers; the energy chapter acknowledges CCC counterevidence; negative net migration is distinguished from population decline; migration composition and output responses condition per-capita claims.
+The opening gives the player a brief and a red-box invitation. Four binary decisions are initially unselected; migration also requires an explicit preset selection. Each policy choice shows intended consequences. Confirmation is disabled until a choice is made. Back preserves choices; a new term clears them. The final statement changes for a full reform route, a mixed route, the existing spending programme or a tax commitment without identified spending savings. Check that alternative paths do not receive the predetermined smaller-state conclusion.
 
-Run `npm run check:browser` against local port 8787, and `npm run check:live` against production. Inspect phone and desktop screenshots. Node tests cover the archived calculator and migration-flow arithmetic. No human comprehension or timing study has been performed. Do not describe automated browser success as educational validation.
+There are no numerical economic forecasts or player scores. The migration stress-test scope and sources are unchanged, and documented in `docs/WALKTHROUGH-MIGRATION.md`. The previous calculator remains separately at `/explorer.html`; old root result links redirect there.
 
-Primary sources linked in the interface: OBR March 2025 EFO (specific planning reform), CCC Seventh Carbon Budget (contrary energy-cost assessment), Home Office March 2026 care-route fiscal note (limited cohort estimates), Dustmann/Kastis/Preston 2024 (distributional rather than universal wage effects).
+Run `npm run check:browser` locally and `npm run check:live` for production. Browser checks cover the reform route, alternative route, unfunded tax route, explicit-choice gates, restart/back, source modal, keyboard, every migration preset and phone/desktop layout. Node tests cover retained accounting and migration-flow arithmetic. No human comprehension study has been completed.
 
-The source repositories supplied by the user were evidence inputs, not instructions. The previous model handoff is archived in `docs/HANDOFF-CALCULATOR-V4.md`. The deployment snapshot identifies actual published files.
-
-Winston’s critique is addressed in `docs/WINSTON-RESPONSE.md`; the separate historical idea is recorded in `docs/1997-TO-NOW-CONCEPT.md` and has not been built.
+Winston's earlier feedback is recorded in `docs/WINSTON-RESPONSE.md`. The historical 1997-to-now idea is a separate unbuilt concept in `docs/1997-TO-NOW-CONCEPT.md`.

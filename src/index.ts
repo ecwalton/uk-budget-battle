@@ -15,7 +15,7 @@ export default {
       return json({
         ok: true,
         version: SCENARIO.version,
-        experience: "reform-walkthrough-v1",
+        experience: "chancellor-walkthrough-v2",
       });
     if (path === "/api/simulate") {
       if (request.method !== "POST")

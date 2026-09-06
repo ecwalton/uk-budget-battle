@@ -9,7 +9,7 @@ Reference: ONS provisional year ending December 2025 long-term immigration 813,0
 | Negative | 50,000 | 150,000 | 71,000 | −100,000 |
 | Deeper negative | 60,000 | 250,000 | 111,000 | −250,000 |
 
-The walkthrough initially shows the −100,000 example; the user can switch to the observed reference or either other preset. All policy splits are constructed stress-test assumptions. They are not estimates of current eligible populations, delivery feasibility or fiscal savings. Lower pay is not equivalent to lower skill. Non-working is not a visa-route synonym. Group membership is assumed non-overlapping. There is no verified category baseline from which to assert absolute net flows separately for each worker/non-worker group.
+The Chancellor walkthrough initially displays the observed reference for comparison, but requires the player to click a preset before confirming a migration decision. All policy splits are constructed stress-test assumptions. They are not estimates of current eligible populations, delivery feasibility or fiscal savings. Lower pay is not equivalent to lower skill. Non-working is not a visa-route synonym. Group membership is assumed non-overlapping. There is no verified category baseline from which to assert absolute net flows separately for each worker/non-worker group.
 
 Additional removals are assumed to concern long-term residents without permission to stay, qualify as emigration and be additional to ONS reference departures. Their effect on total migration is counted exactly once. There is no separate irregular-inflow adjustment added to the ONS total. Real returns and migration data do not map exactly.
 

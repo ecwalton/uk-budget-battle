@@ -1010,3 +1010,61 @@ dialog {
     }
   }
 }
+.decision-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 30px 0;
+}
+.decision-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  border: 2px solid #c9d6d0;
+  border-radius: 14px;
+  background: #fffaf0;
+  padding: 24px;
+  color: var(--ink);
+}
+.decision-options button > span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #546f68;
+}
+.decision-options strong {
+  font-size: 19px;
+  line-height: 1.3;
+}
+.decision-options small {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.decision-options button[aria-pressed="true"] {
+  border-color: #164c4c;
+  background: var(--tint);
+  box-shadow: 0 4px 0 #b8cfc3;
+}
+.choice-prompt {
+  font-size: 14px;
+  color: #526a63;
+}
+.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+@media (max-width: 650px) {
+  .decision-options {
+    grid-template-columns: 1fr;
+  }
+  .decision-options button {
+    padding: 20px;
+  }
+  .decision-options strong {
+    font-size: 17px;
+  }
+}
