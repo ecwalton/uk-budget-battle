@@ -72,6 +72,7 @@ try {
   assert.deepEqual(await health.json(), {
     ok: true,
     version: SCENARIO.version,
+    experience: "envelope-game-with-presets-v1",
   });
   assert.equal(
     (await page.request.get(base + "/social-card.png")).status(),
