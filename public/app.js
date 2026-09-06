@@ -1,3 +1,4 @@
+import { MIGRATION_DEFAULTS, migrationPanel } from "./migration.js";
 import {
   SCENARIO,
   SHOCKS,
@@ -15,7 +16,7 @@ import { budgetStory, newspaperPNG } from "./newspaper.js";
 const $ = (s) => document.querySelector(s),
   money = (n) => `${n < 0 ? "−" : ""}£${Math.abs(n).toFixed(1)}bn`,
   signed = (n) => `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toFixed(1)}`;
-const STORE = "budget-battle-v3";
+const STORE = "budget-battle-v4";
 let disposeBox = () => {},
   renderGeneration = 0;
 let state = {
@@ -25,6 +26,7 @@ let state = {
     stage: "spending",
     shock: "calm",
     sensitivity: "central",
+    ...MIGRATION_DEFAULTS,
   },
   saved = null;
 try {
@@ -66,7 +68,7 @@ function intro() {
     )
     .join(
       "",
-    )}</div></section><div class="intro-bottom"><p><strong>A game about trade-offs, not a forecast.</strong> All financial paths and outcome points here are illustrative training assumptions. Read the model, challenge it, and try another approach.</p>${building()}</div></main>${footer()}`;
+    )}</div></section>${migrationPanel(state, true)}<div class="intro-bottom"><p><strong>A game about trade-offs, not a forecast.</strong> All financial paths and outcome points here are illustrative training assumptions. Read the model, challenge it, and try another approach.</p>${building()}</div></main>${footer()}`;
 }
 function getGame(includePending = true) {
   return {
@@ -76,6 +78,9 @@ function getGame(includePending = true) {
         : state.decisions,
     shock: state.shock,
     sensitivity: state.sensitivity,
+    migration: state.migration,
+    dependants: state.dependants,
+    wages: state.wages,
   };
 }
 function current() {
@@ -181,7 +186,7 @@ function game() {
     result = current(),
     funding = state.stage === "funding",
     budget = result.budgets[n];
-  return `${header()}<main id="main" class="game"><div class="game-top"><div class="eyebrow">YOUR TERM AT THE TREASURY</div><button class="text-button" data-action="restart">Start a new term ↺</button></div><ol class="steps">${ROUNDS.map((r, i) => `<li class="${i === n ? "now" : i < n ? "done" : ""}" ${i === n ? 'aria-current="step"' : ""}><span>${i < n ? "✓" : i + 1}</span><div>Budget ${i + 1}<small>${r.label}</small></div></li>`).join("")}</ol><div class="round-title"><section><div class="eyebrow">BUDGET ${n + 1} OF 5 / ${funding ? "02 · FUND THE SETTLEMENT" : "01 · ALLOCATE THE MONEY"}</div><h1 tabindex="-1" id="round-heading">${funding ? "How do you pay?" : "Who gets the money this year?"}</h1><p>${funding ? "Choose the size of your tax changes and a borrowing ceiling. The settlement must fit before you can open the red box." : "Five envelopes, one settlement. Squeeze, hold or grow each. Hold keeps earlier changes; another grow adds another annual commitment."}</p></section></div>${n >= 2 && state.shock !== "calm" ? `<aside class="shock-banner"><strong>ECONOMIC UPDATE / ${SHOCKS[state.shock].name}</strong><span>${money(SHOCKS[state.shock].borrowing[n])} extra baseline borrowing this year, already included below. ${state.shock === "energy" ? "Household scores also lose one point in years 3–5." : "The marginal interest rate is now 4%."}</span></aside>` : ""}<nav class="settlement-tabs" aria-label="Budget screens"><button class="${!funding ? "active" : ""}" data-action="spending" aria-current="${!funding ? "step" : "false"}">1. Spending envelopes</button><button class="${funding ? "active" : ""}" data-action="funding" aria-current="${funding ? "step" : "false"}">2. How you pay</button></nav><div class="settlement-layout"><section class="envelopes" aria-label="${funding ? "Funding settings" : "Spending envelopes"}">${(funding ? [...TAXES, CONTROLS.at(-1)] : ENVELOPES).map(controlHTML).join("")}</section>${fundingBridge(result, n)}</div><div class="decision-bar"><div><strong>${funding ? "A settlement, with consequences." : "Your envelopes share the same funding."}</strong><span>${funding ? "You can return to spending before confirming." : "See the funding screen to set taxes and borrowing."}</span></div><div class="decision-actions"><button class="text-button" data-action="${funding ? "spending" : "clear"}">${funding ? "← Edit spending" : "Reset this Budget"}</button><button class="primary" data-action="${funding ? "review" : "funding"}" ${funding && budget.gap > 1e-8 ? "disabled" : ""}>${funding ? `Review Budget ${n + 1}` : "How do you pay?"} <span>→</span></button></div></div>${metrics(result, n)}<section class="chart-panel">${chart(result)}</section><div class="game-note"><span>Illustrative UK envelopes · no official costings · £40bn underlying deficit target by year 5</span><label>Revenue outlook <select id="sensitivity"><option value="central" ${state.sensitivity === "central" ? "selected" : ""}>Central</option><option value="cautious" ${state.sensitivity === "cautious" ? "selected" : ""}>Cautious business & wealth receipts</option></select></label></div><div class="mobile-balance"><span>Borrowing <strong>${money(result.years[n].borrowing)}</strong></span><strong class="${budget.gap > 1e-8 ? "negative" : "positive"}">${budget.gap > 1e-8 ? `${money(budget.gap)} to fund` : `${money(Math.max(0, budget.headroom))} headroom`}</strong></div></main>${footer()}`;
+  return `${header()}<main id="main" class="game"><div class="game-top"><div class="eyebrow">YOUR TERM AT THE TREASURY</div><button class="text-button" data-action="restart">Start a new term ↺</button></div><ol class="steps">${ROUNDS.map((r, i) => `<li class="${i === n ? "now" : i < n ? "done" : ""}" ${i === n ? 'aria-current="step"' : ""}><span>${i < n ? "✓" : i + 1}</span><div>Budget ${i + 1}<small>${r.label}</small></div></li>`).join("")}</ol><div class="round-title"><section><div class="eyebrow">BUDGET ${n + 1} OF 5 / ${funding ? "02 · FUND THE SETTLEMENT" : "01 · ALLOCATE THE MONEY"}</div><h1 tabindex="-1" id="round-heading">${funding ? "How do you pay?" : "Who gets the money this year?"}</h1><p>${funding ? "Choose the size of your tax changes and a borrowing ceiling. The settlement must fit before you can open the red box." : "Five envelopes, one settlement. Squeeze, hold or grow each. Hold keeps earlier changes; another grow adds another annual commitment."}</p></section></div>${n >= 2 && state.shock !== "calm" ? `<aside class="shock-banner"><strong>ECONOMIC UPDATE / ${SHOCKS[state.shock].name}</strong><span>${money(SHOCKS[state.shock].borrowing[n])} extra baseline borrowing this year, already included below. ${state.shock === "energy" ? "Household scores also lose one point in years 3–5." : "The marginal interest rate is now 4%."}</span></aside>` : ""}<nav class="settlement-tabs" aria-label="Budget screens"><button class="${!funding ? "active" : ""}" data-action="spending" aria-current="${!funding ? "step" : "false"}">1. Spending envelopes</button><button class="${funding ? "active" : ""}" data-action="funding" aria-current="${funding ? "step" : "false"}">2. How you pay</button></nav><div class="settlement-layout"><section class="envelopes" aria-label="${funding ? "Funding settings" : "Spending envelopes"}">${(funding ? [...TAXES, CONTROLS.at(-1)] : ENVELOPES).map(controlHTML).join("")}</section>${fundingBridge(result, n)}</div><div class="decision-bar"><div><strong>${funding ? "A settlement, with consequences." : "Your envelopes share the same funding."}</strong><span>${funding ? "You can return to spending before confirming." : "See the funding screen to set taxes and borrowing."}</span></div><div class="decision-actions"><button class="text-button" data-action="${funding ? "spending" : "clear"}">${funding ? "← Edit spending" : "Reset this Budget"}</button><button class="primary" data-action="${funding ? "review" : "funding"}" ${funding && budget.gap > 1e-8 ? "disabled" : ""}>${funding ? `Review Budget ${n + 1}` : "How do you pay?"} <span>→</span></button></div></div><details class="migration-summary"><summary>Migration: ${state.migration} · separate lifetime effects</summary>${migrationPanel(state)}</details>${metrics(result, n)}<section class="chart-panel">${chart(result)}</section><div class="game-note"><span>Illustrative UK envelopes · no official costings · £40bn underlying deficit target by year 5</span><label>Revenue outlook <select id="sensitivity"><option value="central" ${state.sensitivity === "central" ? "selected" : ""}>Central</option><option value="cautious" ${state.sensitivity === "cautious" ? "selected" : ""}>Cautious business & wealth receipts</option></select></label></div><div class="mobile-balance"><span>Borrowing <strong>${money(result.years[n].borrowing)}</strong></span><strong class="${budget.gap > 1e-8 ? "negative" : "positive"}">${budget.gap > 1e-8 ? `${money(budget.gap)} to fund` : `${money(Math.max(0, budget.headroom))} headroom`}</strong></div></main>${footer()}`;
 }
 function review() {
   const result = current(),
@@ -246,7 +251,7 @@ function resultPage() {
     )
     .join(
       "",
-    )}</div></div><p class="micro">These are disclosed training-game thresholds, not an economic sustainability assessment. No political score is used.</p><section class="chart-panel">${chart(result, true)}</section><section class="legacy-grid"><div><div class="eyebrow">THE FIVE YEARS AFTER YOU LEAVE</div><h2>Your legacy keeps running.</h2><p>Earlier settlements stay in place. Investment maintenance and catch-up bills arrive. There are no new decisions in years 6–10.</p><div class="legacy-number">${signed(result.legacyImprovement)}<span>£bn cumulative underlying improvement<br>in years 6–10</span></div><p class="micro">Model debt at year 10: ${result.years[9].debtRatio.toFixed(1)}% of GDP; existing plans ${result.years[9].baseDebtRatio.toFixed(1)}%. A simplified debt accumulation, not official PSND.</p></div><div><div class="eyebrow">WHO FEELS IT / YEAR 5</div><h2>Households aren’t an average.</h2><div class="households">${last.pressure.map((v, i) => `<div><span>${["Lowest", "Lower-middle", "Middle", "Upper-middle", "Highest"][i]} income</span><strong class="${v < 0 ? "negative" : "positive"}">${signed(v)} pts</strong></div>`).join("")}</div><p class="micro">Illustrative pressure/relief points. Not estimated disposable income. Points include tax and spending effects. Capacity is also shown separately.</p></div></section><section class="record"><div class="eyebrow">YOUR RECORD</div><h2>Five Budgets, in the books.</h2>${state.decisions.map((ids, i) => `<div><span>0${i + 1}</span><p>${ids.length ? ids.map((id) => CARDS.find((c) => c.id === id).title).join(" · ") : "Kept existing plans"}</p></div>`).join("")}</section><div class="result-actions"><button class="primary" data-action="share">Copy your result link ↗</button><button class="secondary" data-action="newspaper">Download your front page</button><button class="text-button" data-action="download">Download data</button><button class="text-button" data-action="restart">Try another approach →</button></div><p class="micro">Sharing includes all your choices, the scenario, safeguards and model version.</p></main>${footer()}`;
+    )}</div></div><p class="micro">These are disclosed training-game thresholds, not an economic sustainability assessment. No political score is used.</p><section class="chart-panel">${chart(result, true)}</section><section class="legacy-grid"><div><div class="eyebrow">THE FIVE YEARS AFTER YOU LEAVE</div><h2>Your legacy keeps running.</h2><p>Earlier settlements stay in place. Investment maintenance and catch-up bills arrive. There are no new decisions in years 6–10.</p><div class="legacy-number">${signed(result.legacyImprovement)}<span>£bn cumulative underlying improvement<br>in years 6–10</span></div><p class="micro">Model debt at year 10: ${result.years[9].debtRatio.toFixed(1)}% of GDP; existing plans ${result.years[9].baseDebtRatio.toFixed(1)}%. A simplified debt accumulation, not official PSND.</p></div><div><div class="eyebrow">WHO FEELS IT / YEAR 5</div><h2>Households aren’t an average.</h2><div class="households">${last.pressure.map((v, i) => `<div><span>${["Lowest", "Lower-middle", "Middle", "Upper-middle", "Highest"][i]} income</span><strong class="${v < 0 ? "negative" : "positive"}">${signed(v)} pts</strong></div>`).join("")}</div><p class="micro">Illustrative pressure/relief points. Not estimated disposable income. Points include tax and spending effects. Capacity is also shown separately.</p></div></section>${migrationPanel(state)}<section class="record"><div class="eyebrow">YOUR RECORD</div><h2>Five Budgets, in the books.</h2>${state.decisions.map((ids, i) => `<div><span>0${i + 1}</span><p>${ids.length ? ids.map((id) => CARDS.find((c) => c.id === id).title).join(" · ") : "Kept existing plans"}</p></div>`).join("")}</section><div class="result-actions"><button class="primary" data-action="share">Copy your result link ↗</button><button class="secondary" data-action="newspaper">Download your front page</button><button class="text-button" data-action="download">Download data</button><button class="text-button" data-action="restart">Try another approach →</button></div><p class="micro">Sharing includes all your choices, the scenario, safeguards and model version.</p></main>${footer()}`;
 }
 function showDialog(html) {
   $("#method-content").innerHTML =
@@ -390,6 +395,7 @@ async function action(a) {
       stage: "spending",
       shock: "calm",
       sensitivity: "central",
+      ...MIGRATION_DEFAULTS,
     };
     saved = null;
     history.replaceState(null, "", location.pathname);
@@ -459,6 +465,15 @@ document.addEventListener("click", (event) => {
   }
 });
 document.addEventListener("change", (event) => {
+  if (
+    ["migration", "dependants", "wages"].includes(event.target.id) &&
+    state.mode === "intro"
+  ) {
+    const id = event.target.id;
+    state[id] = event.target.value;
+    render();
+    $("#" + id)?.focus({ preventScroll: true });
+  }
   if (event.target.id === "sensitivity") {
     state.sensitivity = event.target.value;
     save();
@@ -474,6 +489,9 @@ window.render_game_to_text = () =>
     round: Math.min(state.decisions.length + 1, 5),
     shock: state.shock,
     sensitivity: state.sensitivity,
+    migration: state.migration,
+    dependants: state.dependants,
+    wages: state.wages,
     stage: state.stage,
     pending: state.pending,
     decisions: state.decisions,

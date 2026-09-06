@@ -1,6 +1,6 @@
 // Training assumptions, deliberately independent of any claimed official costing.
 export const SCENARIO = {
-  version: "envelopes-2026.09-v3",
+  version: "envelopes-2026.09-v4",
   title: "The first five Budgets",
   baseline: [130, 118, 105, 93, 80, 76, 72, 68, 64, 60],
   startingDebt: 2850,

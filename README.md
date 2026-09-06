@@ -13,7 +13,7 @@ Changes accumulate: hold adds no new change; another grow adds another recurring
 
 Welfare and business/wealth changes phase in. Investment brings maintenance or catch-up bills later. Capacity and household effects include service cuts; the fiscal and legacy scores exclude interest to prevent higher rates improving the score. Charts and debt include interest. See [the rewrite response](docs/ENVELOPE-REWRITE.md) for the independent review findings and remaining limitations.
 
-Version `envelopes-2026.09-v3` intentionally rejects earlier saves and shared links. No old result is silently rescored. An incomplete Budget is a draft: only confirmed Budgets are saved.
+Version `envelopes-2026.09-v4` intentionally rejects earlier saves and shared links. No old result is silently rescored. An incomplete Budget is a draft: only confirmed Budgets are saved.
 
 ## Run and deploy
 
@@ -95,3 +95,7 @@ npm run check:browser
 `npm run check:live` exercises the deployed website. Screenshots go to the ignored `artifacts/` directory. Both scripts accept `BASE_URL` without a trailing slash. With the local app running, `npm run build:social` regenerates the social preview using the Blender model.
 
 GitHub Actions runs build, type and accounting checks on pushes and pull requests. It does not deploy and requires no Cloudflare secrets.
+
+## Migration illustration (v4)
+
+The care-route migration calculator separates lifetime net fiscal cost and optional historical wage sensitivity from annual Budget scoring. See [scope, sources and assumptions](docs/MIGRATION-SCENARIO.md). Annual cash savings are not estimated.

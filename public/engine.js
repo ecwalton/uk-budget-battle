@@ -1,3 +1,4 @@
+import { migrationSettings, migrationImpact } from "./migration.js";
 import {
   SCENARIO,
   SHOCKS,
@@ -34,6 +35,7 @@ export function validateGame(input) {
     decisions: input.decisions.map((ids) => [...ids]),
     shock: input.shock,
     sensitivity: input.sensitivity,
+    ...migrationSettings(input),
   };
 }
 export function policyCost(c, age, sensitivity = "central") {
@@ -150,6 +152,7 @@ export function simulate(input) {
   const fundingPass = budgets.every((b) => b.gap < 1e-8);
   return {
     years,
+    migration: migrationImpact(game),
     budgets,
     fundingPass,
     annualImprovement: -last.primary || 0,

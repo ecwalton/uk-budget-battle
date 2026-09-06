@@ -6,7 +6,7 @@ Independently review the Budget Battle implementation, its economic claims and p
 
 Repository: https://github.com/ecwalton/uk-budget-battle (private)  
 Live site: https://uk-budget-battle.openuk-co.workers.dev  
-Scenario: `envelopes-2026.09-v3`  
+Scenario: `envelopes-2026.09-v4`  
 Known deployment: see `docs/DEPLOYMENT-SNAPSHOT.json`  
 Handoff date: 5 September 2026
 
@@ -70,7 +70,7 @@ This opens the public site, completes one winning route, exercises clipboard sha
 
 ## Existing evidence and its limits
 
-The current build has 24 Node tests, including funding ceilings, spending persistence/reversal, welfare and tax ramps, investment bills, binding capacity and household floors, tax-funded and tax-free feasible routes, interest-neutral fiscal scoring, and a concrete funded year-five pass that fails legacy. Presentation tests check that bulletins distinguish new choices from earlier commitments, use cautious receipts correctly and retain model disclosures in the newspaper export. A seeded sample of 3,000 multi-year plans spans all three shocks and both sensitivities. This is not exhaustive over the new choice space, and it does not validate economic calibration.
+The current build has 26 Node tests, including funding ceilings, spending persistence/reversal, welfare and tax ramps, investment bills, binding capacity and household floors, tax-funded and tax-free feasible routes, interest-neutral fiscal scoring, and a concrete funded year-five pass that fails legacy. Presentation tests check that bulletins distinguish new choices from earlier commitments, use cautious receipts correctly and retain model disclosures in the newspaper export. A seeded sample of 3,000 multi-year plans spans all three shocks and both sensitivities. This is not exhaustive over the new choice space, and it does not validate economic calibration.
 
 Browser checks covered desktop/mobile views, size changes and reset, blocked unfunded confirmation, introduction resize, review cancellation, confirmation, resume, sensitivity, the energy shock, results, JSON download, shared-link restoration, API parity, malformed/oversized requests and reduced-motion/keyboard paths. Additional browser checks cover the Blender lid animation through completion, the mobile bulletin, the PNG newspaper download and the five loaded miniature illustrations. A separate live check exercises a winning route, bulletin continuation, PNG download and actual clipboard sharing. No full accessibility audit, independent macroeconomic validation or educational user study has been completed. Re-run the checks rather than treating these past results as current evidence.
 
@@ -117,3 +117,7 @@ Produce `CROSS-CHECK.md` with:
 6. An ordered list of release blockers and optional improvements. Do not turn the five-minute game into a full national forecasting platform.
 
 If you find no material issues, say so and identify the remaining test and evidence limits. Do not invent findings to fill a quota.
+
+## Migration illustration (v4)
+
+The care-route migration calculator separates lifetime net fiscal cost and optional historical wage sensitivity from annual Budget scoring. See [scope, sources and assumptions](docs/MIGRATION-SCENARIO.md). Annual cash savings are not estimated.
