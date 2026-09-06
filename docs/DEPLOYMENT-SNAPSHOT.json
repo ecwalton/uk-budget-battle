@@ -1,13 +1,13 @@
 {
   "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
   "worker": "uk-budget-battle",
-  "deploymentVersion": "f7b94db2-2617-4d69-b810-be81824885fa",
+  "deploymentVersion": "b90a0a74-a206-4d04-b22e-492a0579297c",
   "scenarioVersion": "envelopes-2026.09-v4",
   "recorded": "2026-09-06",
-  "scope": "Clearer homepage with original Blender Treasury desk, illustrated instructions and numbered setup. Game, presets and programme routes retained.",
+  "scope": "Blender props across spending, funding, shocks, bulletins and final legacy; card and stage motion with reduced-motion support. Accounting and game rules unchanged.",
   "sha256": {
     "public/_headers": "443165116fc4604591e1156ecaf66bff607288a6f3503d2edd59e053a65f6fc9",
-    "public/app.js": "4bca9d57f1e6dff24046fb2d84607f5d43d8430b8715f4457ecd773bed72d073",
+    "public/app.js": "dc976c04ea272d4b003de519cca24d0162ff849f54f1b79449ecf38926807a02",
     "public/assets/defence.png": "7e29a63b67a6e923c6e00e2d4c5d1c989647918f58b4f7b917822471e4859f72",
     "public/assets/health.png": "7362fd8527205ae609c1ed2a4ad249114cb751e9dc29dc84b5433df5168d59d8",
     "public/assets/investment.png": "c920e88a8e3aaff0ec0daad40f4604d85e96084821099b220a5e5f5f3d21c535",
@@ -25,7 +25,7 @@
     "public/reform-art.js": "581a2011ff161ab156c65d1049e034e77d81779c968db58723e69903a525b2d4",
     "public/scenario.js": "309b00f6f8c2e98e51a8e1bd0176e1dbe727953402d8edceaef343ada65f2ed5",
     "public/social-card.png": "fb8abea6357657fa95656d3a43ac440bcebe1f3805ce48085d99d1a40b35f241",
-    "public/style.css": "3d98a562c7b2b7a790ba7b96618374df6d3737e41a706e6f9d4f64bba1f52a8a",
+    "public/style.css": "d94c4d49c25449f810a05ad11af2b138abec2f22dca96e7bcb75db8c1f9fd498",
     "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
     "public/walkthrough.css": "fd9683dd2832c3163802426542cb2de480fb3664a28a075ec241ad28407f2b83",
     "public/walkthrough.js": "eccb2e9110f8c73b1c32dbafe6aaa85878e0af848db70e687b557f28645119ac",
@@ -36,7 +36,17 @@
     "public/programme-social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63",
     "public/assets/treasury-desk.glb": "f4e80d33172ec4a75ec8034e30a8451c0e3e62ee0857633bfcfeca216b357429",
     "public/assets/treasury-desk.png": "8af9a60cc3b069c2764860be9b492783956fc47cb33a72da2ed9211f659d4d3c",
-    "src/box.js": "1de5bb048b59d5d35333cb00cdde4843b4cb42340135c406b236f4ebc64a90b4"
+    "src/box.js": "1de5bb048b59d5d35333cb00cdde4843b4cb42340135c406b236f4ebc64a90b4",
+    "public/assets/interiors/news.png": "e3381705f971163fc3514fafea7a328e84e843e832e79bae7a9ccdb08365d565",
+    "public/assets/interiors/spending.png": "6f19885dae17505ccda09d4a41ecd2cd1a03577ae249092c0cc1e7d22b3cec34",
+    "public/assets/interiors/energy.png": "c9a29d32c7effbae894803e1d32074447aea90cf72b24d75264df327ca32f116",
+    "public/assets/interiors/rates.png": "4c04d0910d1f5791e17cb996d9bc38f017e88142ef12be546a2860f46f65bf52",
+    "public/assets/interiors/vat.png": "dae73fd76345758b26686d26d86ed46e2c2434ab31ab15e01bd3d6274e7fb719",
+    "public/assets/interiors/business.png": "323b87dd4ef36cbc80a97ec7386acdd84a9c1822593d254d61b262681878b447",
+    "public/assets/interiors/borrowing.png": "05d0bc79331441ea6c6e9d4787826ca53c23476552a4b8f551f98ef67d50a3f0",
+    "public/assets/interiors/funding.png": "347f1e01d046653874ed9564529097fed4a41032db6685ecc3cc159dd2598433",
+    "public/assets/interiors/income.png": "6c37af700b906d7bde29fc40cb4e36dd962ed12a01ba4e2671447e6d7ebdef26",
+    "public/assets/interiors/legacy.png": "a30e4d91736cf4966773fa3c761a9615b2390314e7e4e93da7082753b0d5210b"
   },
-  "experienceVersion": "envelope-homepage-v2"
+  "experienceVersion": "envelope-interiors-v2"
 }
