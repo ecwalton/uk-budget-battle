@@ -12,9 +12,9 @@
     "build": "node scripts/build.mjs",
     "predev": "npm run build",
     "predeploy": "npm run build",
-    "check:browser": "node scripts/browser-check.mjs",
-    "check:live": "node scripts/live-check.mjs",
-    "build:social": "node scripts/social-card.mjs"
+    "check:browser": "node scripts/walkthrough-check.mjs",
+    "check:live": "BASE_URL=https://uk-budget-battle.openuk-co.workers.dev node scripts/walkthrough-check.mjs",
+    "build:social": "node scripts/walkthrough-social.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "latest",

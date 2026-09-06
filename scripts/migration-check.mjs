@@ -10,7 +10,7 @@ try {
   });
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto(base);
+  await page.goto(base + "/explorer.html");
   await page.selectOption("#migration", "lower");
   await page.selectOption("#wages", "historical");
   assert.match(
@@ -55,7 +55,9 @@ try {
     version: SCENARIO.version,
   };
   await page.goto(
-    base + "/#result=" + Buffer.from(JSON.stringify(g)).toString("base64"),
+    base +
+      "/explorer.html#result=" +
+      Buffer.from(JSON.stringify(g)).toString("base64"),
   );
   await page.reload();
   assert.match(

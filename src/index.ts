@@ -12,7 +12,11 @@ export default {
   async fetch(request, env): Promise<Response> {
     const path = new URL(request.url).pathname;
     if (path === "/api/health" && request.method === "GET")
-      return json({ ok: true, version: SCENARIO.version });
+      return json({
+        ok: true,
+        version: SCENARIO.version,
+        experience: "reform-walkthrough-v1",
+      });
     if (path === "/api/simulate") {
       if (request.method !== "POST")
         return new Response("Method not allowed", {

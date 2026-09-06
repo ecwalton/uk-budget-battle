@@ -13,7 +13,7 @@ try {
   page.on("console", (m) => {
     if (m.type() === "error") errors.push(m.text());
   });
-  await page.goto(base);
+  await page.goto(base + "/explorer.html");
   await page.waitForSelector(".box-canvas");
   await page.waitForTimeout(400);
   await page.setViewportSize({ width: 1400, height: 1000 });
@@ -157,7 +157,7 @@ try {
   });
   await shared.goto(
     base +
-      "/#result=" +
+      "/explorer.html#result=" +
       Buffer.from(JSON.stringify(shareData)).toString("base64"),
   );
   assert.equal(
@@ -220,7 +220,7 @@ try {
   );
   await shared.click('[data-action="continue"]');
   const reduced = await browser.newPage({ reducedMotion: "reduce" });
-  await reduced.goto(base);
+  await reduced.goto(base + "/explorer.html");
   await reduced.waitForTimeout(200);
   assert.equal(await reduced.locator(".box-canvas").count(), 0);
   await reduced.click("#start-btn");
