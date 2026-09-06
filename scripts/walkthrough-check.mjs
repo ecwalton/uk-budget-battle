@@ -93,6 +93,8 @@ try {
       await page.click('[data-action="next"]');
     }
     assert.equal(await page.locator(".summary-list>div").count(), 5);
+    assert.equal(await page.locator(".fiscal-number").innerText(), "£95.5bn");
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     assert.match(await page.locator("h1").innerText(), /smaller state/);
     await page.screenshot({
       path: `artifacts/walkthrough/conclusion-${width}.png`,
@@ -128,6 +130,7 @@ try {
       /protected the spending/,
     );
     assert.doesNotMatch(await page.locator("h1").innerText(), /smaller state/);
+    assert.equal(await page.locator(".fiscal-number").innerText(), "£115.5bn");
     await page.click('[data-action="restart"]');
     await page.click("#start-btn");
     for (const value of [1, 0, 0, 0]) {

@@ -1,10 +1,10 @@
 {
   "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
   "worker": "uk-budget-battle",
-  "deploymentVersion": "aec9c821-c1ed-40e4-b186-1cc3d7ef4c73",
+  "deploymentVersion": "e1b76d35-23a5-45c6-94a4-8772ebc06497",
   "scenarioVersion": "envelopes-2026.09-v4",
   "recorded": "2026-09-06",
-  "scope": "Chancellor framing restored. Four unselected binary policy decisions plus explicit migration choice; final statement follows choices rather than announcing smaller state at the start.",
+  "scope": "Numerical Chancellor statement with OBR 2026\u201327 baseline and explicit conditional fiscal targets.",
   "sha256": {
     "public/_headers": "443165116fc4604591e1156ecaf66bff607288a6f3503d2edd59e053a65f6fc9",
     "public/app.js": "341152b8a7ab80ea9d709cc439171e354554b4d8ccf6f9cce65058a2dfaf988d",
@@ -27,9 +27,10 @@
     "public/social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63",
     "public/style.css": "6143b8dd5b92fca10cafb7b25ea374fca9e05a658707e66386aad90f41449bb4",
     "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
-    "public/walkthrough.css": "7d2e5d06a15e3823a18004d07d20d69dfce0538bb906e887791ebca6df2a5646",
-    "public/walkthrough.js": "d41ad1239a0279244a5e585f62cc4447df8a39abedf67566803bf58dc011e6fe",
-    "src/index.ts": "c4ddbe1efc80c8f98b5fe6fab0cde5e8f64c9cfb84256edf859a7692a2959746"
+    "public/walkthrough.css": "fd9683dd2832c3163802426542cb2de480fb3664a28a075ec241ad28407f2b83",
+    "public/walkthrough.js": "8205f1c3bcfb8e175ecc2a04d36ea19c509173e06a308893b0e08f18806c4e82",
+    "src/index.ts": "c4ddbe1efc80c8f98b5fe6fab0cde5e8f64c9cfb84256edf859a7692a2959746",
+    "public/fiscal-statement.js": "a9c32db5d694871c1ff697f674e57733aacc52afd62d1bccdd5cc4cf4fb1d2de"
   },
-  "experienceVersion": "chancellor-walkthrough-v2"
+  "experienceVersion": "chancellor-walkthrough-v3"
 }

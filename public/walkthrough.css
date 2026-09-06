@@ -1068,3 +1068,12 @@ dialog {
     font-size: 17px;
   }
 }
+
+.fiscal-statement { background:#fff5d5; border:2px solid var(--ink,#202433); border-radius:24px; padding:clamp(18px,4vw,38px); margin:28px 0 38px; }
+.fiscal-number {font-size:clamp(52px,9vw,100px);font-weight:850;letter-spacing:-.065em;line-height:1;margin:22px 0 10px;}
+.fiscal-statement h2 {font-size:clamp(22px,3vw,32px);margin:0 0 18px;}
+.fiscal-table table {width:100%;border-collapse:collapse;margin:24px 0;font-size:clamp(12px,1.6vw,17px);}
+.fiscal-table th,.fiscal-table td {padding:13px 5px;border-bottom:1px solid #d1bd84;text-align:right;}
+.fiscal-table th:first-child {text-align:left;width:46%;}
+.fiscal-table td:last-child {font-weight:800;}
+.fiscal-note {font-size:13px;line-height:1.5;}

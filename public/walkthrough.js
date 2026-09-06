@@ -1,3 +1,4 @@
+import { fiscalStatementHTML } from "./fiscal-statement.js";
 import { policyIcon, heroArt } from "./reform-art.js";
 import { migrationPathHTML, migrationPath } from "./migration-path.js";
 const chapters = [
@@ -17,7 +18,7 @@ const chapters = [
     condition:
       "The savings must be real. Cutting a useful service or investment can impose costs elsewhere; an efficiency promise is not money in the bank.",
     evidence:
-      "This is a proposal to reduce the scope and cost of government, not a claim that every spending cut raises growth. The walkthrough does not assign savings to unspecified programmes.",
+      "This is a proposal to reduce the scope and cost of government, not a claim that every spending cut raises growth. The £50bn target is an illustrative assumption, not a programme-by-programme costing or an OBR estimate.",
   },
   {
     short: "Taxes",
@@ -99,7 +100,7 @@ const decisions = [
       "Protect the existing programme of spending",
     ],
     descriptions: [
-      "Seek recurring savings, while protecting the services you judge essential.",
+      "Target £50bn a year of net savings (illustrative: 3.5% of spending), after replacement and delivery costs.",
       "Keep current commitments and accept the revenue they require.",
     ],
     alternative: [
@@ -114,7 +115,7 @@ const decisions = [
       "Hold tax rates and repair the finances first",
     ],
     descriptions: [
-      "Commit to returning verified savings to households and businesses.",
+      "Target £30bn a year of tax relief, released only once the £50bn savings target is delivered.",
       "Use any savings for borrowing reduction or existing pressures.",
     ],
     alternative: [
@@ -201,7 +202,7 @@ function conclusion() {
       : smaller
         ? "Your spending decision points towards a smaller state, but your other choices qualify that direction. This is your particular combination of priorities, not a single pre-written manifesto."
         : "Your programme retains existing spending commitments. Some of your other decisions may change regulation, energy or migration, but they do not by themselves fund a lower tax burden.";
-  return `${header()}<main id="main"><div class="eyebrow">YOUR CHANCELLOR’S STATEMENT</div><h1 tabindex="-1" id="heading">${title}</h1><p class="lead">${synthesis}</p><div class="summary-list">${chapters.map((c, i) => `<div><span class="summary-icon">${policyIcon(i)}</span><p><strong>${i < 4 ? decisions[i].options[chosen[i]] : `Migration: ${m.net.toLocaleString("en-GB")} net per year`}</strong><small>${i < 4 ? decisions[i].descriptions[chosen[i]] : "A flow scenario; its fiscal and per-person effects depend on who arrives, who leaves and how output responds."}</small></p></div>`).join("")}</div><aside class="destination"><div class="eyebrow">YOUR TEST IN OFFICE</div><h2>Can you deliver<br>better living standards?</h2><p>Your choices set a direction. They do not guarantee growth, lower energy bills or higher income per person. Delivering savings, maintaining services and improving productive capacity are the tests your government now faces.</p></aside><nav class="actions"><button class="quiet" data-action="back">← Revisit your decisions</button><button class="primary" data-action="restart">Start a new term ↺</button></nav></main>${footer()}`;
+  return `${header()}<main id="main"><div class="eyebrow">YOUR CHANCELLOR’S STATEMENT</div><h1 tabindex="-1" id="heading">${title}</h1>${fiscalStatementHTML(chosen)}<p class="lead">${synthesis}</p><div class="summary-list">${chapters.map((c, i) => `<div><span class="summary-icon">${policyIcon(i)}</span><p><strong>${i < 4 ? decisions[i].options[chosen[i]] : `Migration: ${m.net.toLocaleString("en-GB")} net per year`}</strong><small>${i < 4 ? decisions[i].descriptions[chosen[i]] : "A flow scenario; its fiscal and per-person effects depend on who arrives, who leaves and how output responds."}</small></p></div>`).join("")}</div><aside class="destination"><div class="eyebrow">YOUR TEST IN OFFICE</div><h2>Can you deliver<br>better living standards?</h2><p>Your choices set a direction. They do not guarantee growth, lower energy bills or higher income per person. Delivering savings, maintaining services and improving productive capacity are the tests your government now faces.</p></aside><nav class="actions"><button class="quiet" data-action="back">← Revisit your decisions</button><button class="primary" data-action="restart">Start a new term ↺</button></nav></main>${footer()}`;
 }
 
 function render(focus = false) {
