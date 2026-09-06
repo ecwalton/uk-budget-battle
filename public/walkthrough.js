@@ -166,13 +166,13 @@ let step = 0;
 let migration = "reference",
   unauthorisedBaseline = 20000;
 const header = () =>
-  `<header><a class="brand" href="/">THE BUDGET BATTLE<span>YOUR TURN AT THE TREASURY</span></a><button class="quiet" data-action="about">Your briefing ↗</button></header>`;
+  `<header><a class="brand" href="/">GBTT PROGRAMME<span>EXPLORE THE POLICY CASE</span></a><button class="quiet" data-action="about">Your briefing ↗</button></header>`;
 const path = (current = 0) =>
   `<ol class="path" aria-label="Your five decisions">${chapters.map((c, i) => `<li class="${i + 1 === current ? "current" : i + 1 < current ? "done" : ""}"><span>${String(i + 1).padStart(2, "0")}</span>${c.short}</li>`).join("")}</ol>`;
 const footer = () =>
   `<footer>A Chancellor scenario · policy consequences are illustrative<button class="quiet" data-action="about">Sources & assumptions</button></footer>`;
 function intro() {
-  return `${header()}<main id="main" class="intro"><div class="hero-grid"><div class="hero-copy"><div class="eyebrow">YOU HAVE BEEN APPOINTED CHANCELLOR.</div><h1>The red box<br>is <em>yours.</em></h1><p class="lead">Your ministers want more. Taxpayers want relief.<br>Make five decisions, then see the government you’ve chosen.</p><div class="start-row"><button class="primary" data-action="next" id="start-btn">Take the red box <span>→</span></button><span>Five decisions · one programme</span></div></div>${heroArt()}</div>${path()}<p class="intro-note">Your brief: improve living standards, make the commitments add up and explain your decisions to the country.</p></main>${footer()}`;
+  return `${header()}<main id="main" class="intro"><p class="intro-note"><strong>The GBTT programme walkthrough.</strong> Explore the argument here, then test its fiscal translation in the game. <a href="/?preset=gbtt">Load the GBTT plan →</a> · <a href="/">Play your own Budget</a></p><div class="hero-grid"><div class="hero-copy"><div class="eyebrow">YOU HAVE BEEN APPOINTED CHANCELLOR.</div><h1>The red box<br>is <em>yours.</em></h1><p class="lead">Your ministers want more. Taxpayers want relief.<br>Make five decisions, then see the government you’ve chosen.</p><div class="start-row"><button class="primary" data-action="next" id="start-btn">Take the red box <span>→</span></button><span>Five decisions · one programme</span></div></div>${heroArt()}</div>${path()}<p class="intro-note">Your brief: improve living standards, make the commitments add up and explain your decisions to the country.</p></main>${footer()}`;
 }
 function chapter() {
   const c = chapters[step - 1];
@@ -202,7 +202,7 @@ function conclusion() {
       : smaller
         ? "Your spending decision points towards a smaller state, but your other choices qualify that direction. This is your particular combination of priorities, not a single pre-written manifesto."
         : "Your programme retains existing spending commitments. Some of your other decisions may change regulation, energy or migration, but they do not by themselves fund a lower tax burden.";
-  return `${header()}<main id="main"><div class="eyebrow">YOUR CHANCELLOR’S STATEMENT</div><h1 tabindex="-1" id="heading">${title}</h1>${fiscalStatementHTML(chosen)}<p class="lead">${synthesis}</p><div class="summary-list">${chapters.map((c, i) => `<div><span class="summary-icon">${policyIcon(i)}</span><p><strong>${i < 4 ? decisions[i].options[chosen[i]] : `Migration: ${m.net.toLocaleString("en-GB")} net per year`}</strong><small>${i < 4 ? decisions[i].descriptions[chosen[i]] : "A flow scenario; its fiscal and per-person effects depend on who arrives, who leaves and how output responds."}</small></p></div>`).join("")}</div><aside class="destination"><div class="eyebrow">YOUR TEST IN OFFICE</div><h2>Can you deliver<br>better living standards?</h2><p>Your choices set a direction. They do not guarantee growth, lower energy bills or higher income per person. Delivering savings, maintaining services and improving productive capacity are the tests your government now faces.</p></aside><nav class="actions"><button class="quiet" data-action="back">← Revisit your decisions</button><button class="primary" data-action="restart">Start a new term ↺</button></nav></main>${footer()}`;
+  return `${header()}<main id="main"><div class="eyebrow">YOUR CHANCELLOR’S STATEMENT</div><h1 tabindex="-1" id="heading">${title}</h1>${fiscalStatementHTML(chosen)}<p class="lead">${synthesis}</p><div class="summary-list">${chapters.map((c, i) => `<div><span class="summary-icon">${policyIcon(i)}</span><p><strong>${i < 4 ? decisions[i].options[chosen[i]] : `Migration: ${m.net.toLocaleString("en-GB")} net per year`}</strong><small>${i < 4 ? decisions[i].descriptions[chosen[i]] : "A flow scenario; its fiscal and per-person effects depend on who arrives, who leaves and how output responds."}</small></p></div>`).join("")}</div><aside class="destination"><div class="eyebrow">YOUR TEST IN OFFICE</div><h2>Can you deliver<br>better living standards?</h2><p>Your choices set a direction. They do not guarantee growth, lower energy bills or higher income per person. Delivering savings, maintaining services and improving productive capacity are the tests your government now faces.</p></aside><p><a href="/?preset=gbtt">Test the GBTT preset in the Budget Battle →</a></p><nav class="actions"><button class="quiet" data-action="back">← Revisit your decisions</button><button class="primary" data-action="restart">Start a new term ↺</button></nav></main>${footer()}`;
 }
 
 function render(focus = false) {
@@ -288,5 +288,5 @@ document.addEventListener("change", (e) => {
 });
 window.advanceTime = () => {};
 if (location.hash.startsWith("#result="))
-  location.replace("/explorer.html" + location.hash);
+  location.replace("/" + location.hash);
 else render();

@@ -14,7 +14,7 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  const response = await page.goto(base + "/explorer.html");
+  const response = await page.goto(base + "/");
   assert.equal(response.status(), 200);
   assert.ok(response.headers()["content-security-policy"]);
   await page.waitForSelector(".box-canvas");
@@ -60,7 +60,7 @@ try {
     assert.equal((await page.request.get(base + path)).status(), 200);
   await page.click('[data-action="share"]');
   const url = await page.evaluate(() => navigator.clipboard.readText());
-  assert.ok(url.startsWith(base + "/explorer.html#result="));
+  assert.ok(url.startsWith(base + "/#result="));
   const other = await context.newPage();
   await other.goto(url);
   assert.deepEqual(

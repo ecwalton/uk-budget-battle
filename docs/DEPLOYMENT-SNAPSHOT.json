@@ -1,13 +1,13 @@
 {
   "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
   "worker": "uk-budget-battle",
-  "deploymentVersion": "e1b76d35-23a5-45c6-94a4-8772ebc06497",
+  "deploymentVersion": "aa2efad5-3388-49c0-83ec-592caa2c5b75",
   "scenarioVersion": "envelopes-2026.09-v4",
   "recorded": "2026-09-06",
-  "scope": "Numerical Chancellor statement with OBR 2026\u201327 baseline and explicit conditional fiscal targets.",
+  "scope": "Envelope game restored at root; programme.html is separate with three editable five-year presets connecting the products. Engine unchanged.",
   "sha256": {
     "public/_headers": "443165116fc4604591e1156ecaf66bff607288a6f3503d2edd59e053a65f6fc9",
-    "public/app.js": "341152b8a7ab80ea9d709cc439171e354554b4d8ccf6f9cce65058a2dfaf988d",
+    "public/app.js": "5eb76e98baab86a5a3d0dc14915d54f0d52c0460a7f5855ac9ec07956a8771d5",
     "public/assets/defence.png": "7e29a63b67a6e923c6e00e2d4c5d1c989647918f58b4f7b917822471e4859f72",
     "public/assets/health.png": "7362fd8527205ae609c1ed2a4ad249114cb751e9dc29dc84b5433df5168d59d8",
     "public/assets/investment.png": "c920e88a8e3aaff0ec0daad40f4604d85e96084821099b220a5e5f5f3d21c535",
@@ -18,19 +18,22 @@
     "public/box.bundle.js": "381f31035913ac1462e1f88133c69beb2742ac1a5fb1628a71a09332d5346375",
     "public/engine.js": "b53ca6be37590b9e6230b0b4461210484c01ed1d175459c02a9acb48bd3a9539",
     "public/explorer.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
-    "public/index.html": "1e3e467799fcf03d4ad409e40da8b861b1a2623cb824af90de835c0e9640006e",
+    "public/index.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
     "public/migration-path.js": "d4a6003fa53e56be206e854dbda1b91e7b6dfcbb7cdcb8b2e08017b7f501a351",
     "public/migration.js": "10440b5a59b7043353bf19f8a76069e65ed5f68dbfe70ef02c8ed50bbe711185",
     "public/newspaper.js": "62cc62b2c677f8b30fac550a4b67b2f0343925b6ad3f61041d6045b648674e0e",
     "public/reform-art.js": "581a2011ff161ab156c65d1049e034e77d81779c968db58723e69903a525b2d4",
     "public/scenario.js": "309b00f6f8c2e98e51a8e1bd0176e1dbe727953402d8edceaef343ada65f2ed5",
-    "public/social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63",
-    "public/style.css": "6143b8dd5b92fca10cafb7b25ea374fca9e05a658707e66386aad90f41449bb4",
+    "public/social-card.png": "fd1a90c76c1bd2c9f7be0da97465fa040e1989f36f5af26583751ea193a38a78",
+    "public/style.css": "6cb4147e629a5dd4181c07f39f0b880b4fdf348bcab7653badefaa2b8833ae49",
     "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
     "public/walkthrough.css": "fd9683dd2832c3163802426542cb2de480fb3664a28a075ec241ad28407f2b83",
-    "public/walkthrough.js": "8205f1c3bcfb8e175ecc2a04d36ea19c509173e06a308893b0e08f18806c4e82",
-    "src/index.ts": "c4ddbe1efc80c8f98b5fe6fab0cde5e8f64c9cfb84256edf859a7692a2959746",
-    "public/fiscal-statement.js": "a9c32db5d694871c1ff697f674e57733aacc52afd62d1bccdd5cc4cf4fb1d2de"
+    "public/walkthrough.js": "eccb2e9110f8c73b1c32dbafe6aaa85878e0af848db70e687b557f28645119ac",
+    "src/index.ts": "7da4468ff1bcd153241db3e697d36707591da16e3f2721dfc8b31debde9c9a83",
+    "public/fiscal-statement.js": "a9c32db5d694871c1ff697f674e57733aacc52afd62d1bccdd5cc4cf4fb1d2de",
+    "public/presets.js": "062d7e8053c59c5d211207925f8ef448e1aa083afea3f6e19f3319d258b37eea",
+    "public/programme.html": "3c5dabfc03a6fac0bb1cd8aaa64338deb478c23f5a55ae65791315cf6a09284c",
+    "public/programme-social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63"
   },
-  "experienceVersion": "chancellor-walkthrough-v3"
+  "experienceVersion": "envelope-game-with-presets-v1"
 }

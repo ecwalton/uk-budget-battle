@@ -15,7 +15,7 @@ try {
     page.on("console", (m) => {
       if (m.type() === "error") errors.push(m.text());
     });
-    const response = await page.goto(base);
+    const response = await page.goto(base + "/programme.html");
     assert.equal(response.status(), 200);
     assert.ok(response.headers()["content-security-policy"]);
     assert.equal(await page.locator("select,input,canvas").count(), 0);

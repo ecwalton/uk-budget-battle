@@ -1,3 +1,4 @@
+import { PRESETS, presetYear } from "./presets.js";
 import { MIGRATION_DEFAULTS, migrationPanel } from "./migration.js";
 import {
   SCENARIO,
@@ -48,6 +49,11 @@ try {
 } catch {
   history.replaceState(null, "", location.pathname);
 }
+const requestedPreset = new URLSearchParams(location.search).get("preset");
+if (state.mode === "intro" && PRESETS[requestedPreset]) state.preset = requestedPreset;
+function presetPicker() {
+  return `<section class="preset-picker"><div class="eyebrow">THREE PLANS. THE SAME RULES.</div><h2>Can you beat these Budgets?</h2><p>Choose a five-year draft, then edit and confirm each Budget yourself. Every plan faces the same ledger, shocks and safeguards.</p><div class="preset-options"><button class="scenario ${!state.preset ? 'active' : ''}" data-preset="custom" aria-pressed="${!state.preset}"><strong>Your own plan</strong><small>Start with all nine levers on hold.</small></button>${Object.entries(PRESETS).map(([id,p])=>`<button class="scenario ${state.preset===id?'active':''}" data-preset="${id}" aria-pressed="${state.preset===id}"><strong>Load the ${p.name}</strong><small>${p.description}</small></button>`).join('')}</div>${state.preset ? `<p><strong>${PRESETS[state.preset].name}:</strong> ${PRESETS[state.preset].limits}</p>` : ''}<p><a href="/programme.html">Explore the GBTT programme →</a></p></section>`;
+}
 const bag = `<svg viewBox="0 0 28 26" aria-hidden="true"><path d="M9 8V4h10v4M3 9h22v15H3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 15h22M12 13h4v5h-4z" fill="currentColor"/></svg>`;
 function building() {
   return `<svg class="building" viewBox="0 0 630 270" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2"><path d="M0 254h630M60 244V119h82V77h64V44h215v33h64v42h84v125M51 119h527M139 77h347M200 44h226M205 35h215M306 35V15m0 1h35l-10 9h-25M69 236h493M72 151h490M146 106h332M211 69h204M241 236V107h149v129M230 107l85-32 85 32z"/>${Array.from({ length: 13 }, (_, i) => `<path d="M${82 + i * 36} 163v62h17v-62zM${82 + i * 36} 193h17"/>`).join("")}${Array.from({ length: 7 }, (_, i) => `<path d="M${185 + i * 36} 87v15h15V87z"/>`).join("")}${[254, 283, 327, 356].map((x) => `<path d="M${x} 118v115m7-115v115"/>`).join("")}<path d="M297 236v-47a18 18 0 0 1 36 0v47M283 246h64M291 241h49"/></g></svg>`;
@@ -68,7 +74,7 @@ function intro() {
     )
     .join(
       "",
-    )}</div></section>${migrationPanel(state, true)}<div class="intro-bottom"><p><strong>A game about trade-offs, not a forecast.</strong> All financial paths and outcome points here are illustrative training assumptions. Read the model, challenge it, and try another approach.</p>${building()}</div></main>${footer()}`;
+    )}</div></section>${presetPicker()}${migrationPanel(state, true)}<div class="intro-bottom"><p><strong>A game about trade-offs, not a forecast.</strong> All financial paths and outcome points here are illustrative training assumptions. Read the model, challenge it, and try another approach.</p>${building()}</div></main>${footer()}`;
 }
 function getGame(includePending = true) {
   return {
@@ -186,7 +192,7 @@ function game() {
     result = current(),
     funding = state.stage === "funding",
     budget = result.budgets[n];
-  return `${header()}<main id="main" class="game"><div class="game-top"><div class="eyebrow">YOUR TERM AT THE TREASURY</div><button class="text-button" data-action="restart">Start a new term ↺</button></div><ol class="steps">${ROUNDS.map((r, i) => `<li class="${i === n ? "now" : i < n ? "done" : ""}" ${i === n ? 'aria-current="step"' : ""}><span>${i < n ? "✓" : i + 1}</span><div>Budget ${i + 1}<small>${r.label}</small></div></li>`).join("")}</ol><div class="round-title"><section><div class="eyebrow">BUDGET ${n + 1} OF 5 / ${funding ? "02 · FUND THE SETTLEMENT" : "01 · ALLOCATE THE MONEY"}</div><h1 tabindex="-1" id="round-heading">${funding ? "How do you pay?" : "Who gets the money this year?"}</h1><p>${funding ? "Choose the size of your tax changes and a borrowing ceiling. The settlement must fit before you can open the red box." : "Five envelopes, one settlement. Squeeze, hold or grow each. Hold keeps earlier changes; another grow adds another annual commitment."}</p></section></div>${n >= 2 && state.shock !== "calm" ? `<aside class="shock-banner"><strong>ECONOMIC UPDATE / ${SHOCKS[state.shock].name}</strong><span>${money(SHOCKS[state.shock].borrowing[n])} extra baseline borrowing this year, already included below. ${state.shock === "energy" ? "Household scores also lose one point in years 3–5." : "The marginal interest rate is now 4%."}</span></aside>` : ""}<nav class="settlement-tabs" aria-label="Budget screens"><button class="${!funding ? "active" : ""}" data-action="spending" aria-current="${!funding ? "step" : "false"}">1. Spending envelopes</button><button class="${funding ? "active" : ""}" data-action="funding" aria-current="${funding ? "step" : "false"}">2. How you pay</button></nav><div class="settlement-layout"><section class="envelopes" aria-label="${funding ? "Funding settings" : "Spending envelopes"}">${(funding ? [...TAXES, CONTROLS.at(-1)] : ENVELOPES).map(controlHTML).join("")}</section>${fundingBridge(result, n)}</div><div class="decision-bar"><div><strong>${funding ? "A settlement, with consequences." : "Your envelopes share the same funding."}</strong><span>${funding ? "You can return to spending before confirming." : "See the funding screen to set taxes and borrowing."}</span></div><div class="decision-actions"><button class="text-button" data-action="${funding ? "spending" : "clear"}">${funding ? "← Edit spending" : "Reset this Budget"}</button><button class="primary" data-action="${funding ? "review" : "funding"}" ${funding && budget.gap > 1e-8 ? "disabled" : ""}>${funding ? `Review Budget ${n + 1}` : "How do you pay?"} <span>→</span></button></div></div><details class="migration-summary"><summary>Migration: ${state.migration} · separate lifetime effects</summary>${migrationPanel(state)}</details>${metrics(result, n)}<section class="chart-panel">${chart(result)}</section><div class="game-note"><span>Illustrative UK envelopes · no official costings · £40bn underlying deficit target by year 5</span><label>Revenue outlook <select id="sensitivity"><option value="central" ${state.sensitivity === "central" ? "selected" : ""}>Central</option><option value="cautious" ${state.sensitivity === "cautious" ? "selected" : ""}>Cautious business & wealth receipts</option></select></label></div><div class="mobile-balance"><span>Borrowing <strong>${money(result.years[n].borrowing)}</strong></span><strong class="${budget.gap > 1e-8 ? "negative" : "positive"}">${budget.gap > 1e-8 ? `${money(budget.gap)} to fund` : `${money(Math.max(0, budget.headroom))} headroom`}</strong></div></main>${footer()}`;
+  return `${header()}<main id="main" class="game">${state.preset ? `<aside class="shock-banner"><strong>${PRESETS[state.preset].name} / Budget ${n+1} draft</strong><span>All nine settings are editable. Changes affect this Budget; the next draft still follows the preset. The ledger can block confirmation.</span></aside>` : ""}<div class="game-top"><div class="eyebrow">YOUR TERM AT THE TREASURY</div><button class="text-button" data-action="restart">Start a new term ↺</button></div><ol class="steps">${ROUNDS.map((r, i) => `<li class="${i === n ? "now" : i < n ? "done" : ""}" ${i === n ? 'aria-current="step"' : ""}><span>${i < n ? "✓" : i + 1}</span><div>Budget ${i + 1}<small>${r.label}</small></div></li>`).join("")}</ol><div class="round-title"><section><div class="eyebrow">BUDGET ${n + 1} OF 5 / ${funding ? "02 · FUND THE SETTLEMENT" : "01 · ALLOCATE THE MONEY"}</div><h1 tabindex="-1" id="round-heading">${funding ? "How do you pay?" : "Who gets the money this year?"}</h1><p>${funding ? "Choose the size of your tax changes and a borrowing ceiling. The settlement must fit before you can open the red box." : "Five envelopes, one settlement. Squeeze, hold or grow each. Hold keeps earlier changes; another grow adds another annual commitment."}</p></section></div>${n >= 2 && state.shock !== "calm" ? `<aside class="shock-banner"><strong>ECONOMIC UPDATE / ${SHOCKS[state.shock].name}</strong><span>${money(SHOCKS[state.shock].borrowing[n])} extra baseline borrowing this year, already included below. ${state.shock === "energy" ? "Household scores also lose one point in years 3–5." : "The marginal interest rate is now 4%."}</span></aside>` : ""}<nav class="settlement-tabs" aria-label="Budget screens"><button class="${!funding ? "active" : ""}" data-action="spending" aria-current="${!funding ? "step" : "false"}">1. Spending envelopes</button><button class="${funding ? "active" : ""}" data-action="funding" aria-current="${funding ? "step" : "false"}">2. How you pay</button></nav><div class="settlement-layout"><section class="envelopes" aria-label="${funding ? "Funding settings" : "Spending envelopes"}">${(funding ? [...TAXES, CONTROLS.at(-1)] : ENVELOPES).map(controlHTML).join("")}</section>${fundingBridge(result, n)}</div><div class="decision-bar"><div><strong>${funding ? "A settlement, with consequences." : "Your envelopes share the same funding."}</strong><span>${funding ? "You can return to spending before confirming." : "See the funding screen to set taxes and borrowing."}</span></div><div class="decision-actions"><button class="text-button" data-action="${funding ? "spending" : "clear"}">${funding ? "← Edit spending" : "Reset this Budget"}</button><button class="primary" data-action="${funding ? "review" : "funding"}" ${funding && budget.gap > 1e-8 ? "disabled" : ""}>${funding ? `Review Budget ${n + 1}` : "How do you pay?"} <span>→</span></button></div></div><details class="migration-summary"><summary>Migration: ${state.migration} · separate lifetime effects</summary>${migrationPanel(state)}</details>${metrics(result, n)}<section class="chart-panel">${chart(result)}</section><div class="game-note"><span>Illustrative UK envelopes · no official costings · £40bn underlying deficit target by year 5</span><label>Revenue outlook <select id="sensitivity"><option value="central" ${state.sensitivity === "central" ? "selected" : ""}>Central</option><option value="cautious" ${state.sensitivity === "cautious" ? "selected" : ""}>Cautious business & wealth receipts</option></select></label></div><div class="mobile-balance"><span>Borrowing <strong>${money(result.years[n].borrowing)}</strong></span><strong class="${budget.gap > 1e-8 ? "negative" : "positive"}">${budget.gap > 1e-8 ? `${money(budget.gap)} to fund` : `${money(Math.max(0, budget.headroom))} headroom`}</strong></div></main>${footer()}`;
 }
 function review() {
   const result = current(),
@@ -267,7 +273,7 @@ function save() {
   try {
     localStorage.setItem(
       STORE,
-      JSON.stringify({ ...getGame(false), version: SCENARIO.version }),
+      JSON.stringify({ ...getGame(false), preset: state.preset, version: SCENARIO.version }),
     );
   } catch {
     toast(
@@ -319,7 +325,7 @@ async function action(a) {
   if (a === "start") {
     state.mode = "game";
     state.decisions = [];
-    state.pending = defaultChoices();
+    state.pending = presetYear(state.preset, 0) || defaultChoices();
     state.stage = "spending";
     save();
     render();
@@ -329,7 +335,8 @@ async function action(a) {
     state = {
       ...state,
       ...validateGame(saved),
-      pending: defaultChoices(),
+      preset: PRESETS[saved.preset] ? saved.preset : undefined,
+      pending: presetYear(saved.preset, saved.decisions.length) || defaultChoices(),
       stage: "spending",
       mode: saved.decisions.length === 5 ? "results" : "game",
     };
@@ -350,7 +357,7 @@ async function action(a) {
   if (a === "commit") {
     if (current().budgets[state.decisions.length].gap > 1e-8) return;
     state.decisions.push([...state.pending]);
-    state.pending = defaultChoices();
+    state.pending = presetYear(state.preset, state.decisions.length) || defaultChoices();
     state.stage = "spending";
     state.mode = "recap";
     save();
@@ -441,6 +448,11 @@ document.addEventListener("click", (event) => {
   const el = event.target.closest("button");
   if (!el) return;
   if (el.dataset.action) void action(el.dataset.action);
+  if (el.dataset.preset) {
+    state.preset = PRESETS[el.dataset.preset] ? el.dataset.preset : undefined;
+    render();
+    document.querySelector(`[data-preset="${el.dataset.preset}"]`)?.focus({preventScroll:true});
+  }
   if (el.dataset.shock) {
     state.shock = el.dataset.shock;
     render();

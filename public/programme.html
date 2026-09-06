@@ -6,40 +6,43 @@
     <meta name="theme-color" content="#852c37" />
     <meta
       name="description"
-      content="Five Budgets. Five spending envelopes. Step into the Treasury in a transparent UK budget strategy game."
+      content="You are the Chancellor. Make five policy decisions and discover the programme they create."
     />
     <meta property="og:type" content="website" />
     <meta
       property="og:url"
-      content="https://uk-budget-battle.openuk-co.workers.dev/"
+      content="https://uk-budget-battle.openuk-co.workers.dev/programme.html"
     />
     <meta
       property="og:title"
-      content="The Budget Battle — Your turn at the Treasury"
+      content="GBTT programme — explore the choices"
     />
     <meta
       property="og:description"
-      content="Five Budgets. Five spending envelopes. Can you make the numbers work? An independent UK fiscal strategy game with illustrative training assumptions."
+      content="The red box is yours. Five decisions, one government. What will you choose?"
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       property="og:image"
-      content="https://uk-budget-battle.openuk-co.workers.dev/social-card.png"
+      content="https://uk-budget-battle.openuk-co.workers.dev/programme-social-card.png"
     />
-    <title>The Budget Battle — Your turn at the Treasury</title>
+    <title>GBTT programme — explore the choices</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='12' width='42' height='30' rx='3' fill='%23852c37'/%3E%3Cpath d='M16 12V6h16v6' fill='none' stroke='%23852c37' stroke-width='4'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="/style.css" />
-    <script type="module" src="/app.js"></script>
+    <link rel="stylesheet" href="/walkthrough.css" />
+    <script type="module" src="/walkthrough.js"></script>
   </head>
   <body>
-    <a class="skip" href="#main">Skip to game</a>
+    <a class="skip" href="#main">Skip to walkthrough</a>
     <div id="app"></div>
     <div id="toast" role="status"></div>
     <div id="budget-status" class="sr-only" role="status"></div>
-    <dialog id="method"><div id="method-content"></div></dialog>
-    <noscript>This game needs JavaScript to calculate your decisions.</noscript>
+    <dialog id="about"><div id="about-content"></div></dialog>
+    <noscript
+      >This walkthrough needs JavaScript to move between its five
+      steps.</noscript
+    >
   </body>
 </html>
