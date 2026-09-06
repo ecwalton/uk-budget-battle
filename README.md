@@ -25,3 +25,7 @@ Game UI: `public/app.js`, `public/style.css`, `public/index.html`. Presets: `pub
 ## Deployment
 
 Cloudflare Worker `uk-budget-battle`; `npm run deploy`. GitHub CI checks build, types and Node tests but does not automatically deploy. `docs/DEPLOYMENT-SNAPSHOT.json` records the published assets. See [handoff](HANDOFF.md).
+
+## Homepage and Blender assets
+
+The homepage uses an original interactive Treasury desk tableau, three illustrated instructions, and a numbered plan/conditions setup. Advanced migration assumptions are expandable. `assets/treasury-desk.blend` and `scripts/create-treasury-desk.py` are the editable source and reproducible generator. The browser loads `public/assets/treasury-desk.glb`; `treasury-desk.png` is the Blender-rendered fallback for reduced motion, no WebGL or failed model loading. Recap lid animation still uses the original red-box model. `scripts/home-check.mjs` checks the setup/start flow, mobile text geometry and fallback.

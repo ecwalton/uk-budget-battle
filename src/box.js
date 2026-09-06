@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 // Original Blender asset, progressively enhanced; no continuous idle animation.
-export function mountBox(host, { open = false } = {}) {
+export function mountBox(host, { open = false, tableau = false } = {}) {
   if (
     !host?.isConnected ||
     matchMedia("(prefers-reduced-motion: reduce)").matches ||
@@ -24,8 +24,8 @@ export function mountBox(host, { open = false } = {}) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene(),
     camera = new THREE.PerspectiveCamera(29, 1, 0.1, 30);
-  camera.position.set(2, 1.7, 6.5);
-  camera.lookAt(0, 0.2, 0);
+  camera.position.set(...(tableau ? [3.5, 5.1, 9.4] : [2, 1.7, 6.5]));
+  camera.lookAt(0, tableau ? -0.25 : 0.2, 0);
   const group = new THREE.Group();
   scene.add(group);
   group.rotation.set(0, -0.2, -0.035);
@@ -131,7 +131,7 @@ export function mountBox(host, { open = false } = {}) {
   host.addEventListener("pointerleave", leave);
   document.addEventListener("visibilitychange", visibility);
   new GLTFLoader().load(
-    "/assets/red-box.glb",
+    tableau ? "/assets/treasury-desk.glb" : "/assets/red-box.glb",
     (gltf) => {
       if (disposed || !host.isConnected) {
         release(gltf.scene);
@@ -160,6 +160,7 @@ export function mountBox(host, { open = false } = {}) {
       }
       host.append(canvas);
       host.classList.add("enhanced");
+      canvas.dataset.asset = tableau ? "treasury-desk" : "red-box";
       resize();
     },
     undefined,

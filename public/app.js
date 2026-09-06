@@ -52,7 +52,7 @@ try {
 const requestedPreset = new URLSearchParams(location.search).get("preset");
 if (state.mode === "intro" && PRESETS[requestedPreset]) state.preset = requestedPreset;
 function presetPicker() {
-  return `<section class="preset-picker"><div class="eyebrow">THREE PLANS. THE SAME RULES.</div><h2>Can you beat these Budgets?</h2><p>Choose a five-year draft, then edit and confirm each Budget yourself. Every plan faces the same ledger, shocks and safeguards.</p><div class="preset-options"><button class="scenario ${!state.preset ? 'active' : ''}" data-preset="custom" aria-pressed="${!state.preset}"><strong>Your own plan</strong><small>Start with all nine levers on hold.</small></button>${Object.entries(PRESETS).map(([id,p])=>`<button class="scenario ${state.preset===id?'active':''}" data-preset="${id}" aria-pressed="${state.preset===id}"><strong>Load the ${p.name}</strong><small>${p.description}</small></button>`).join('')}</div>${state.preset ? `<p><strong>${PRESETS[state.preset].name}:</strong> ${PRESETS[state.preset].limits}</p>` : ''}<p><a href="/programme.html">Explore the GBTT programme →</a></p></section>`;
+  return `<section class="preset-picker"><div class="eyebrow">01 / PICK A PLAN</div><div class="preset-options"><button class="scenario ${!state.preset ? 'active' : ''}" data-preset="custom" aria-pressed="${!state.preset}"><span class="preset-symbol" aria-hidden="true">＋</span><strong>Your own plan</strong><small>A blank page. All nine levers start on hold.</small></button>${Object.entries(PRESETS).map(([id,p])=>`<button class="scenario ${state.preset===id?'active':''}" data-preset="${id}" aria-pressed="${state.preset===id}"><span class="preset-symbol" aria-hidden="true">${id==='gbtt'?'↘':id==='revenue'?'≋':'↗'}</span><strong>${p.name}</strong><small>${id==='gbtt'?'Smaller spending envelopes. Lower taxes. Can you close the gap?':id==='revenue'?'Protect cash spending. Raise revenue through income tax.':'Build capacity. Pay with higher income and business taxes.'}</small></button>`).join('')}</div>${state.preset ? `<p><strong>${PRESETS[state.preset].name}:</strong> ${PRESETS[state.preset].limits}</p>` : ''}<p><a href="/programme.html">Explore the GBTT programme →</a></p></section>`;
 }
 const bag = `<svg viewBox="0 0 28 26" aria-hidden="true"><path d="M9 8V4h10v4M3 9h22v15H3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 15h22M12 13h4v5h-4z" fill="currentColor"/></svg>`;
 function building() {
@@ -65,16 +65,15 @@ function footer() {
   return `<footer><span>An independent fiscal strategy game</span><span>Training assumptions · ${SCENARIO.version}</span><button class="text-button" data-action="method">Sources & methodology</button></footer>`;
 }
 function intro() {
-  return `${header()}<main id="main" class="intro"><div class="hero"><section><div class="eyebrow"><span class="red-dot"></span> THE RED BOX IS YOURS</div><h1>Everyone wants<br>more.<br><em>You do the maths.</em></h1><p class="lede">Five Budgets. Five spending envelopes. A country of competing priorities. Step into the Treasury and find out what you’re willing to trade.</p><p class="training-label">Illustrative training scenario · not an official forecast</p><div class="hero-actions"><button class="primary" id="start-btn" data-action="start">Take the red box <span>→</span></button>${saved ? '<button class="secondary" data-action="resume">Resume your term</button>' : ""}</div><p class="micro">Five Budgets <span>·</span> No sign-up <span>·</span> Your choices stay in your browser</p></section><aside class="dossier"><div class="file-tab">YOUR FIRST BRIEFING</div><div class="dossier-top"><span>HM TREASURY / TRAINING EXERCISE</span><span>01</span></div><div class="box-stage"><div class="red-box"><span class="handle"></span><span class="box-lock">◆</span><span class="box-label">THE BUDGET<br><b>YOUR CALL.</b></span></div></div><h2>There is no painless Budget.</h2><p>Borrowing is already falling in the baseline. Your challenge: reduce the underlying annual deficit by <strong>£40bn</strong> by Budget 5, save at least <strong>£100bn</strong> cumulatively during your term, sustain that improvement on average over the next five years, and avoid breaching the game’s service or household safeguards.</p><div class="briefing-stats"><div><strong>5</strong><span>Budgets to deliver</span></div><div><strong>10</strong><span>years of consequences</span></div></div><span class="stamp">EVERY CHOICE HAS A COST</span></aside></div><section class="scenario-picker"><div><div class="eyebrow">CHOOSE YOUR ECONOMIC BACKDROP</div><p>Same choices. Different conditions.</p></div><div class="scenario-options">${Object.entries(
-    SHOCKS,
-  )
-    .map(
-      ([id, s], i) =>
-        `<button class="scenario ${state.shock === id ? "active" : ""}" data-shock="${id}" aria-pressed="${state.shock === id}"><span class="scenario-num">0${i + 1}</span><strong>${s.name}</strong><small>${s.subtitle}</small></button>`,
-    )
-    .join(
-      "",
-    )}</div></section>${presetPicker()}${migrationPanel(state, true)}<div class="intro-bottom"><p><strong>A game about trade-offs, not a forecast.</strong> All financial paths and outcome points here are illustrative training assumptions. Read the model, challenge it, and try another approach.</p>${building()}</div></main>${footer()}`;
+  return `${header()}<main id="main" class="intro home-v2">
+  <section class="home-hero"><div class="home-copy"><div class="eyebrow"><span class="red-dot"></span> YOU ARE THE CHANCELLOR</div><h1>A red box.<br>A country.<br><em>Your call.</em></h1><p class="lede">Build five Budgets. Fund your promises.<br>Find out what survives the pressure.</p><div class="hero-actions"><button class="primary" id="start-btn" data-action="start">Start your term <span>→</span></button><a class="home-setup-link" href="#setup">Choose a starting plan ↓</a></div>${saved ? '<button class="text-button" data-action="resume">Continue your saved term →</button>' : ''}<p class="home-current">${state.preset ? PRESETS[state.preset].name : 'Your own plan'} <span>·</span> ${SHOCKS[state.shock].name}</p><div class="home-pills"><span>5 Budgets</span><span>9 levers</span><span>10 years of consequences</span></div></div>
+  <div class="home-art"><div class="art-orbit" aria-hidden="true"></div><span class="scene-caption">YOUR FIRST DAY AT THE TREASURY</span><div class="box-stage treasury-stage" role="img" aria-label="A Blender-modelled Treasury desk with a red Budget box, spending envelopes, gold coins and a five-year ledger"><img class="desk-fallback" src="/assets/treasury-desk.png" width="1100" height="900" alt="" fetchpriority="high"></div><div class="desk-label desk-label-one"><span>01 / SPENDING</span><strong>Every promise has a price.</strong></div><div class="desk-label desk-label-two"><span>02 / FUNDING</span><strong>The numbers have to add up.</strong></div></div></section>
+  <section class="how-play" aria-label="How to play"><div class="how-title"><div class="eyebrow">THE JOB, IN THREE MOVES</div><h2>Easy to start.<br> Hard choices to make.</h2></div><article><img src="/assets/health.png" width="80" height="80" alt="" loading="lazy"><span>01</span><h3>Set your priorities</h3><p>Grow, hold or squeeze five spending envelopes.</p></article><article><img src="/assets/welfare.png" width="80" height="80" alt="" loading="lazy"><span>02</span><h3>Make it add up</h3><p>Set taxes and borrowing. An unfunded Budget cannot pass.</p></article><article><img src="/assets/other.png" width="80" height="80" alt="" loading="lazy"><span>03</span><h3>Face the consequences</h3><p>Read each Budget’s headlines. Protect services and households.</p></article></section>
+  <section class="home-challenge"><div><div class="eyebrow">WHAT COUNTS AS A WIN?</div><h2>Leave more than a good headline.</h2></div><p>Improve the annual deficit by <strong>£40bn</strong> in Budget 5, save <strong>£100bn</strong> over your term, and sustain the gains afterwards—without breaking the service or household safeguards. <button class="text-button" data-action="method">Read the rules ↗</button></p></section>
+  <div id="setup" class="home-setup"><div class="setup-heading"><div class="eyebrow">MAKE IT YOUR TERM</div><h2>Choose your starting point.</h2><p>Start from scratch or take a plan apart. You can change every lever.</p></div>${presetPicker()}
+  <section class="scenario-picker"><div><div class="eyebrow">02 / PICK THE CONDITIONS</div><p>Keep it steady—or test yourself against a shock in Budget 3.</p></div><div class="scenario-options">${Object.entries(SHOCKS).map(([id,sh],i)=>`<button class="scenario ${state.shock===id?'active':''}" data-shock="${id}" aria-pressed="${state.shock===id}"><span class="scenario-num">${['☀','ϟ','↗'][i]}</span><strong>${sh.name}</strong><small>${sh.subtitle}</small><span class="selection-dot" aria-hidden="true">${state.shock===id?'✓':'○'}</span></button>`).join('')}</div></section>
+  <details class="home-extra"><summary>Optional: explore migration assumptions</summary>${migrationPanel(state,true)}</details><div class="home-launch"><div><span>YOUR BRIEF IS READY</span><strong>${state.preset?PRESETS[state.preset].name:'Your own plan'} · ${SHOCKS[state.shock].name}</strong></div><button class="primary" data-action="start">Start your term →</button></div></div>
+  <p class="home-disclaimer">An independent strategy game. Costs and outcome points are illustrative training assumptions, not official forecasts. No sign-up. Your game stays in your browser.</p></main>${footer()}`;
 }
 function getGame(includePending = true) {
   return {
@@ -287,6 +286,7 @@ function toast(message) {
   setTimeout(() => $("#toast").classList.remove("visible"), 4500);
 }
 function render() {
+  const optionalOpen = document.querySelector(".home-extra")?.open;
   disposeBox();
   disposeBox = () => {};
   const generation = ++renderGeneration;
@@ -298,6 +298,7 @@ function render() {
         : state.mode === "recap"
           ? recapPage()
           : game();
+  if (optionalOpen && document.querySelector(".home-extra")) document.querySelector(".home-extra").open = true;
   if (state.mode === "game" || state.mode === "results")
     drawChart(current(), state.mode === "results");
   if (
@@ -310,6 +311,7 @@ function render() {
         if (generation === renderGeneration)
           disposeBox = mountBox($(".box-stage"), {
             open: state.mode === "recap",
+            tableau: state.mode === "intro",
           });
       })
       .catch(() => {});
@@ -498,6 +500,7 @@ window.addEventListener("resize", () => {
 window.render_game_to_text = () =>
   JSON.stringify({
     mode: state.mode,
+    preset: state.preset || "custom",
     round: Math.min(state.decisions.length + 1, 5),
     shock: state.shock,
     sensitivity: state.sensitivity,

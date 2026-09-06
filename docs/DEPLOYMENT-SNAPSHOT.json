@@ -1,13 +1,13 @@
 {
   "liveUrl": "https://uk-budget-battle.openuk-co.workers.dev",
   "worker": "uk-budget-battle",
-  "deploymentVersion": "aa2efad5-3388-49c0-83ec-592caa2c5b75",
+  "deploymentVersion": "f7b94db2-2617-4d69-b810-be81824885fa",
   "scenarioVersion": "envelopes-2026.09-v4",
   "recorded": "2026-09-06",
-  "scope": "Envelope game restored at root; programme.html is separate with three editable five-year presets connecting the products. Engine unchanged.",
+  "scope": "Clearer homepage with original Blender Treasury desk, illustrated instructions and numbered setup. Game, presets and programme routes retained.",
   "sha256": {
     "public/_headers": "443165116fc4604591e1156ecaf66bff607288a6f3503d2edd59e053a65f6fc9",
-    "public/app.js": "5eb76e98baab86a5a3d0dc14915d54f0d52c0460a7f5855ac9ec07956a8771d5",
+    "public/app.js": "4bca9d57f1e6dff24046fb2d84607f5d43d8430b8715f4457ecd773bed72d073",
     "public/assets/defence.png": "7e29a63b67a6e923c6e00e2d4c5d1c989647918f58b4f7b917822471e4859f72",
     "public/assets/health.png": "7362fd8527205ae609c1ed2a4ad249114cb751e9dc29dc84b5433df5168d59d8",
     "public/assets/investment.png": "c920e88a8e3aaff0ec0daad40f4604d85e96084821099b220a5e5f5f3d21c535",
@@ -15,7 +15,7 @@
     "public/assets/other.png": "88c0f15b4bd56c3b5b42a7f81522a1e457703b4ce89440d3ceddfea0b331991b",
     "public/assets/red-box.glb": "b44119dd6b5eee274947ac37f44c59ff919ef95d89f1d23e66810b803f416500",
     "public/assets/welfare.png": "8039cbefa44408762726d86b5eb64a9066e3fcf5d47adbc357554359d1361b52",
-    "public/box.bundle.js": "381f31035913ac1462e1f88133c69beb2742ac1a5fb1628a71a09332d5346375",
+    "public/box.bundle.js": "473347158a9a80fcdacea10d9cb9ee3cac87ca35a2d970f0188f1b3a6a8421df",
     "public/engine.js": "b53ca6be37590b9e6230b0b4461210484c01ed1d175459c02a9acb48bd3a9539",
     "public/explorer.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
     "public/index.html": "0e47e3993898518e032a286defa5f09f9ca6ba0eb819ae2f57a75a564f43b4ad",
@@ -24,8 +24,8 @@
     "public/newspaper.js": "62cc62b2c677f8b30fac550a4b67b2f0343925b6ad3f61041d6045b648674e0e",
     "public/reform-art.js": "581a2011ff161ab156c65d1049e034e77d81779c968db58723e69903a525b2d4",
     "public/scenario.js": "309b00f6f8c2e98e51a8e1bd0176e1dbe727953402d8edceaef343ada65f2ed5",
-    "public/social-card.png": "fd1a90c76c1bd2c9f7be0da97465fa040e1989f36f5af26583751ea193a38a78",
-    "public/style.css": "6cb4147e629a5dd4181c07f39f0b880b4fdf348bcab7653badefaa2b8833ae49",
+    "public/social-card.png": "fb8abea6357657fa95656d3a43ac440bcebe1f3805ce48085d99d1a40b35f241",
+    "public/style.css": "3d98a562c7b2b7a790ba7b96618374df6d3737e41a706e6f9d4f64bba1f52a8a",
     "public/three-LICENSE.txt": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
     "public/walkthrough.css": "fd9683dd2832c3163802426542cb2de480fb3664a28a075ec241ad28407f2b83",
     "public/walkthrough.js": "eccb2e9110f8c73b1c32dbafe6aaa85878e0af848db70e687b557f28645119ac",
@@ -33,7 +33,10 @@
     "public/fiscal-statement.js": "a9c32db5d694871c1ff697f674e57733aacc52afd62d1bccdd5cc4cf4fb1d2de",
     "public/presets.js": "062d7e8053c59c5d211207925f8ef448e1aa083afea3f6e19f3319d258b37eea",
     "public/programme.html": "3c5dabfc03a6fac0bb1cd8aaa64338deb478c23f5a55ae65791315cf6a09284c",
-    "public/programme-social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63"
+    "public/programme-social-card.png": "e213a9b21acda7ec4a3b1c6d4f7c68071117dea8e1573a6ca4890bd9abe95d63",
+    "public/assets/treasury-desk.glb": "f4e80d33172ec4a75ec8034e30a8451c0e3e62ee0857633bfcfeca216b357429",
+    "public/assets/treasury-desk.png": "8af9a60cc3b069c2764860be9b492783956fc47cb33a72da2ed9211f659d4d3c",
+    "src/box.js": "1de5bb048b59d5d35333cb00cdde4843b4cb42340135c406b236f4ebc64a90b4"
   },
-  "experienceVersion": "envelope-game-with-presets-v1"
+  "experienceVersion": "envelope-homepage-v2"
 }
